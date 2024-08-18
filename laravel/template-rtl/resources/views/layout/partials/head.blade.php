@@ -1,4 +1,4 @@
- <!-- Bootstrap CSS -->
+ Bootstrap CSS
  <link rel="stylesheet" href="{{ url('build/css/bootstrap.rtl.min.css') }}">
 
  <!-- Datetimepicker CSS -->

@@ -865,6 +865,7 @@ Route::get('/language-settings-web', function () {
 
 
 Route::get('/pos', [\App\Http\Controllers\PosController::class, 'index'])->name('pos');
+Route::get('/products-by-category/{categoryId}', [\App\Http\Controllers\PosController::class, 'getProductsByCategory']);
 
 
 
