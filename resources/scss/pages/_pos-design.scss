@@ -273,8 +273,17 @@
             font-weight: $font-weight-bold;
             &.cat-name {
                 a {
-                    color: $sub-title;
+                    background-color: #FF9F43;
+                    border-radius: 3px;
+                    font-weight: 600;
+                    color: #ffffff;
+                    font-size: 14px;
+                    padding: 0 10px;
+                    min-width: 64px;
                 }
+
+
+                
             }
             &.product-name {
                 a {
@@ -306,14 +315,13 @@
     }
 }
 .product-wrap{ 
-    height: 34vh;
     overflow: auto;
 
     .product-list {
         box-shadow: $box-shadow;
         @include margin-padding(0 0 10px 0, 10px);
         .product-info {
-            width: 60%;
+            // width: 60%;
             .img-bg {
                 width: 83px;
                 height: 83px;

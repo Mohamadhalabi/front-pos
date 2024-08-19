@@ -9,24 +9,24 @@
                         <h5>Categories</h5>
                         <p>Select From Below Categories</p>
                         <ul class="tabs owl-carousel pos-category">
-                            <li id="all" data-id="all" class="all-tab">
+                            <li id="all" data-id="all" class="all-tab" style="cursor: pointer;">
                                 <a href="javascript:void(0);">
                                     <img src="{{ URL::asset('/build/img/categories/category-01.png') }}" alt="Categories">
                                 </a>
                                 <h6><a href="javascript:void(0);">All Categories</a></h6>
-                                <span>80 Items</span>
+                                <span>{{$pagination['total']}} Items</span>
                             </li>
                             @foreach($categories as $category)
-                                <li id="{{$category['name']}}" data-id="{{$category['id']}}">
-                                    <a href="{{ url()->current() }}?page=1&category={{ $category['id'] }}" class="category-link">
-                                        <img src="{{ $category['icon'] }}" alt="Categories">
+                                <li id="category-{{$category['id']}}" data-id="{{$category['id']}}" class="category-item" style="cursor: pointer;">
+                                    <a href="{{ url()->current() }}?page=1&category={{ $category['id'] }}" class="category-link" onclick="event.stopPropagation();">
+                                        <img src="{{ $category['icon'] }}" alt="Categories" style="mix-blend-mode: multiply;">
                                     </a>
-                                    <h6><a href="{{ url()->current() }}?page=1&category={{ $category['id'] }}" class="category-link">{{ $category['name'] }}</a></h6>
+                                    <h6><a href="{{ url()->current() }}?page=1&category={{ $category['id'] }}" class="category-link" onclick="event.stopPropagation();">{{ $category['name'] }}</a></h6>
                                     <span>
-                                    <a href="{{ url()->current() }}?page=1&category={{ $category['id'] }}" class="category-link">    
-                                    4 Items
-                                    </a>
-                                </span>
+                                        <a href="{{ url()->current() }}?page=1&category={{ $category['id'] }}" class="category-link" onclick="event.stopPropagation();">
+                                        {{$category['products_count']}} Items
+                                        </a>
+                                    </span>
                                 </li>
                             @endforeach
                         </ul>
@@ -35,16 +35,25 @@
                                 <div class="tab_content active" data-tab="all">
                                     <div class="row" id="product-list">
                                         @foreach($products as $product)
-                                        <div class="col-sm-2 col-md-6 col-lg-3 col-xl-3 pe-2">
+                                        <div class="col-sm-4 col-md-6 col-lg-4 col-xl-3 pe-2">
                                             <div class="product-info default-cover card">
                                                 <a href="javascript:void(0);" class="img-bg">
-                                                    <img src="{{ $product['image'] }}" alt="Products" width="100" height="100">
+                                                    <img src="{{ $product['image'] }}" alt="Products" width="100" height="100" style="mix-blend-mode: multiply;">
                                                     <span><i data-feather="check" class="feather-16"></i></span>
                                                 </a>
-                                                <h6 class="cat-name"><a href="javascript:void(0);">{{ $product['category'] }}</a></h6>
-                                                <h6 class="product-name mt-"><a href="javascript:void(0);">{{ $product['name'] }}</a></h6>
-                                                <div class="d-flex align-items-center justify-content-between price">
-                                                    <p>${{ $product['price'] }}</p>
+                                                <h6 class="cat-name text-center"><a class="product-category" href="javascript:void(0);">{{ $product['sku'] }}</a></h6>
+                                                <h6 class="product-name mt-2 text-center"><a href="javascript:void(0);">{{ $product['name'] }}</a></h6>
+                                                <div class="price">
+                                                    <div class="row">
+                                                        <div class="col-6 price2">
+                                                        <p style="color:red;font-weight:bold;font-size:16px">{{ $product['price'] }}TL</p>
+
+                                                        </div>
+                                                        <div class="col-6">
+                                                            <p style="float:right">{{ $product['category'] }}</p>
+
+                                                    </div>
+                                                    </div>
                                                 </div>
                                             </div>
                                         </div>
@@ -83,28 +92,29 @@
                         <div class="customer-info block-section">
                             <h6>Customer Information</h6>
                             <div class="input-block d-flex align-items-center">
-                                <div class="flex-grow-1">
-                                    <select class="select">
-                                        <option>Walk in Customer</option>
-                                        <!-- <option>John</option>
-                                        <option>Smith</option>
-                                        <option>Ana</option>
-                                        <option>Elza</option> -->
-                                    </select>
+                            <div class="row">
+                            <div class="col-lg-12 col-sm-12 col-12">
+                                <div class="input-blocks">
+                                    <label>Customer Name</label>
+                                    <input type="text" class="form-control">
                                 </div>
-                                <a href="#" class="btn btn-primary btn-icon" data-bs-toggle="modal"
-                                    data-bs-target="#create"><i data-feather="user-plus" class="feather-16"></i></a>
                             </div>
-                            <div class="input-block">
-                                <select class="select">
-                                    <option>Search Products</option>
-                                    <!-- <option>IPhone 14 64GB</option>
-                                    <option>MacBook Pro</option>
-                                    <option>Rolex Tribute V3</option>
-                                    <option>Red Nike Angelo</option>
-                                    <option>Airpod 2</option>
-                                    <option>Oldest</option> -->
-                                </select>
+                            <div class="col-lg-12 col-sm-12 col-12">
+                                <div class="input-blocks">
+                                    <label>Phone</label>
+                                    <input type="text" class="form-control">
+                                </div>
+                            </div>
+                            <div class="col-lg-12 col-sm-12 col-12">
+                                <div class="input-blocks">
+                                    <label>Address</label>
+                                    <div class="d-flex align-items-center">
+                                        <input type="text" id="address-input" class="form-control">
+                                        <i id="get-location" class="fas fa-map-marker-alt" style="cursor: pointer; margin-left: 8px;"></i>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                             </div>
                         </div>
 
@@ -114,50 +124,17 @@
                                 <a href="javascript:void(0);" class="d-flex align-items-center text-danger"><span
                                         class="me-1"><i data-feather="x" class="feather-16"></i></span>Clear all</a>
                             </div>
-                            <div class="product-wrap">
+                            <div class="product-wrap" style="height:auto!important">
                                 <div class="product-list d-flex align-items-center justify-content-between">
-                                    <!-- <div class="d-flex align-items-center product-info" data-bs-toggle="modal"
-                                        data-bs-target="#products">
-                                        <a href="javascript:void(0);" class="img-bg">
-                                            <img src="{{ URL::asset('/build/img/products/pos-product-16.png') }}"
-                                                alt="Products">
-                                        </a>
-                                        <div class="info">
-                                            <span>PT0005</span>
-                                            <h6><a href="javascript:void(0);">Red Nike Laser</a></h6>
-                                            <p>$2000</p>
-                                        </div>
-                                    </div>
-                                    <div class="qty-item text-center">
-                                        <a href="javascript:void(0);"
-                                            class="dec d-flex justify-content-center align-items-center"
-                                            data-bs-toggle="tooltip" data-bs-placement="top" title="minus"><i
-                                                data-feather="minus-circle" class="feather-14"></i></a>
-                                        <input type="text" class="form-control text-center" name="qty"
-                                            value="4">
-                                        <a href="javascript:void(0);"
-                                            class="inc d-flex justify-content-center align-items-center"
-                                            data-bs-toggle="tooltip" data-bs-placement="top" title="plus"><i
-                                                data-feather="plus-circle" class="feather-14"></i></a>
-                                    </div>
-                                    <div class="d-flex align-items-center action">
-                                        <a class="btn-icon edit-icon me-2" href="#" data-bs-toggle="modal"
-                                            data-bs-target="#edit-product">
-                                            <i data-feather="edit" class="feather-14"></i>
-                                        </a>
-                                        <a class="btn-icon delete-icon confirm-text" href="javascript:void(0);">
-                                            <i data-feather="trash-2" class="feather-14"></i>
-                                        </a>
-                                    </div>
-                                </div> -->
                             </div>
                         </div>
 
                         <div class="d-grid btn-block">
-                            <a class="btn btn-secondary" href="javascript:void(0);">
-                                Total :
+                            <a class="btn btn-secondary" href="javascript:void(0);" id="total-price">
+                                Total: 0.00
                             </a>
                         </div>
+
                         <div class="btn-row d-sm-flex align-items-center justify-content-between">
                             <a href="javascript:void(0);" class="btn btn-success btn-icon flex-fill"
                                 data-bs-toggle="modal" data-bs-target="#payment-completed"><span

@@ -40,7 +40,7 @@ class PosController extends Controller
 
         $products = $data['products'];
         $pagination = $data['pagination'];
-    
+
         return view('pos', compact('products', 'pagination','categories'));
     }
     public function getProductsByCategory($categoryId)
