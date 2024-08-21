@@ -25,7 +25,53 @@
         font-size: 14px;
         padding: 0 10px;
         min-width: 64px;
-    }    
+    }
+    .rtl {
+        direction: rtl;
+        text-align: right; /* Optional: adjust text alignment if needed */
+    }
+    @media screen and (min-width:600px){
+        .login-userset{
+            min-width:500px;
+        }
+    }
+    /* Add this to your main CSS file or create a new rtl.css */
+
+    .rtl {
+        direction: rtl;
+        text-align: right; /* Align text to the right */
+    }
+
+    .rtl .login-wrapper {
+        /* Adjust layout for RTL */
+        padding-right: 20px; /* Add padding to the right */
+    }
+
+    .rtl .form-login {
+        margin-right: 0; /* Reset margin for RTL */
+        margin-left: auto; /* Center align in RTL */
+    }
+
+    .rtl .form-addons img {
+        margin-left: 10px; /* Adjust icon position */
+    }
+
+    .rtl .authentication-check .row {
+        flex-direction: row-reverse; /* Reverse flex direction */
+    }
+
+    .rtl .custom-checkbox {
+        text-align: right; /* Align checkbox label to the right */
+    }
+
+    .rtl .forgot-link {
+        text-align: left; /* Align "Forgot Password?" link to the left */
+    }
+    .rtl .email-icon, .rtl .password-icon{
+        left: 0!important;
+        right: auto!important;
+    }
+
     </style>
 </head>
 

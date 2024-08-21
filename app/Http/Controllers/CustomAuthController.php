@@ -7,6 +7,7 @@ use Hash;
 use Session;
 use App\Models\User;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Http;
 
 class CustomAuthController extends Controller
 {
@@ -14,63 +15,84 @@ class CustomAuthController extends Controller
     public function index()
     {
         
-        return view('signin');
+        return view('signin-3');
     }  
       
 
     public function customSignin(Request $request)
     {
-        $request->validate([
-            'email' => 'required|email',
-            'password' => 'required',
-        ],
-        [
-            'email.required' => 'Email is required',
-            'password.required' => 'Password is required',
-
-        ]
-
-    );
-        $credentials = $request->only('email', 'password');
-          if ($credentials['email']=='admin@example.com' && $credentials['password']=='123456'){
-        return redirect()->intended('index')
-                        ->withSuccess('Signed in');
+        $response = Http::withHeaders([
+            'Accept-Language' => app()->getLocale(),
+            'Content-Type' => 'application/json',
+            'Accept' => 'application/json',
+            'secret-key' => env('SECRET_KEY', 'default_value'),
+            'api-key' => env('API_KEY', 'default_value'),
+        ])->post(env('API_BASE_URL', 'http://backend-url') . '/login', [
+            'email' => $request->email,
+            'password' => $request->password,
+        ]);
+    
+        if ($response->successful()) {
+            // Store the token in the session
+            session(['token' => $response->json('token')]);
+    
+            // Store user info in the session
+            $userInfo = $response->json('user'); // Capture the user info from the response
+            session(['user' => $userInfo]);
+    
+            return redirect()->route('pos')->with('message', 'Login successful');
         }
-        if (Auth::attempt($credentials)) {
-            return redirect()->intended('index')
-                        ->withSuccess('Signed in');
-        }
-         
-      
-        return redirect("signin")->withErrors('These credentials do not match our records.');
+    
+        return back()->withErrors(['error' => $response->json('message')]);
     }
+    public function logout(Request $request)
+    {
+        // Clear the session
+        $request->session()->flush();
+    
+        // Optionally, you can also invalidate the session token if you're using API tokens
+        // auth()->user()->tokens()->delete();
+    
+        // Redirect to /pos
+        return redirect('/pos')->with('message', 'Successfully logged out.');
+    }    
+    
     public function registration()
     {
-        return view('register');
+        return view('register-3');
     }
       
 
     public function customRegister(Request $request)
     {  
         $request->validate([
-            'name' => 'required|min:5',
-            'email' => 'required|email|unique:users',
-            'password' => 'required|min:6',
-            'confirmpassword' => 'required|min:6',
-        ],
-         [
-            'name.required' => 'Userame is required',
-            'email.required' => 'Email is required',
-            'password.required' => 'Password is required',
-            'confirmpassword.required' => 'Confirm Password is required',
+            'name' => 'required|string|max:255',
+            'email' => 'required|string|email|max:255|unique:users',
+            'password' => 'required|string|min:4',
+            'address' => 'required|string|min:5',
+            'phone' => 'required',
+        ]);
 
-        ]
-    );
-           
-        $data = $request->all();
-        $check = $this->create($data);
-         
-        return redirect("signin")->withSuccess('You have signed-in');
+        $response = Http::withHeaders([
+            'Accept-Language' => app()->getLocale(),
+            'Content-Type' => 'application/json',
+            'Accept' => 'application/json',
+            'secret-key' => env('SECRET_KEY', 'default_value'),
+            'api-key' => env('API_KEY', 'default_value'),
+        ])->post(env('API_BASE_URL', 'http://backend-url') . '/register', [
+            'name' => $request->name,
+            'email' => $request->email,
+            'password' => $request->password,
+            'phone' => $request->phone,
+            'address' => $request->address,
+        ]);
+        
+
+        if ($response->successful()) {
+            return redirect()->route('signin')->with('message', 'User registered successfully');
+        }
+
+        return back()->withErrors(['error' => $response->json('message')]);
     }
 
 

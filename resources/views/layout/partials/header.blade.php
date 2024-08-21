@@ -32,23 +32,25 @@
         <!-- Flag -->
         <li class="nav-item dropdown has-arrow flag-nav nav-item-box">
             <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="javascript:void(0);" role="button">
-                <img src="{{ URL::asset('/build/img/flags/us.png') }}" alt="Language" class="img-fluid">
+
+        @if(app()->getLocale() != 'ar')
+        <img src="{{ URL::asset('/build/img/flags/us.png') }}" alt="Language" class="img-fluid">
+        @else
+        <img src="{{ URL::asset('/build/img/flags/sa.png') }}" alt="Language" class="img-fluid">
+        @endif
+
             </a>
             <div class="dropdown-menu dropdown-menu-right">
-                <a href="javascript:void(0);" class="dropdown-item active">
-                    <img src="{{ URL::asset('/build/img/flags/us.png') }}" alt="" height="16"> English
+            <a href="{{ route('lang.switch', 'en') }}" class="dropdown-item {{ app()->getLocale() == 'en' ? 'active' : '' }}">
+                <img src="{{ URL::asset('/build/img/flags/us.png') }}" alt="" height="16"> English
                 </a>
-                <a href="javascript:void(0);" class="dropdown-item">
-                    <img src="{{ URL::asset('/build/img/flags/fr.png') }}" alt="" height="16"> French
+                <a href="{{ route('lang.switch', 'ar') }}" class="dropdown-item {{ app()->getLocale() == 'ar' ? 'active' : '' }}">
+                    <img src="{{ URL::asset('/build/img/flags/sa.png') }}" alt="" height="16"> Arabic
                 </a>
-                <a href="javascript:void(0);" class="dropdown-item">
-                    <img src="{{ URL::asset('/build/img/flags/es.png') }}" alt="" height="16"> Spanish
-                </a>
-                <a href="javascript:void(0);" class="dropdown-item">
-                    <img src="{{ URL::asset('/build/img/flags/de.png') }}" alt="" height="16"> German
-                </a>
+
             </div>
         </li>
+
         <!-- /Flag -->
 
         <li class="nav-item nav-item-box">
@@ -56,42 +58,44 @@
                 <i data-feather="maximize"></i>
             </a>
         </li>
-        <li class="nav-item dropdown has-arrow main-drop">
-            <a href="javascript:void(0);" class="dropdown-toggle nav-link userset" data-bs-toggle="dropdown">
-                <span class="user-info">
-                    <span class="user-letter">
-                        <img src="{{ URL::asset('/build/img/profiles/avator1.jpg') }}" alt=""
-                            class="img-fluid">
+
+                <li class="nav-item dropdown has-arrow main-drop">
+            @if(session('user'))
+                <a href="javascript:void(0);" class="dropdown-toggle nav-link userset" data-bs-toggle="dropdown">
+                    <span class="user-info">
+                        <span class="user-detail">
+                            <span class="user-name">{{ session('user.name') }}</span>
+                        </span>
                     </span>
-                    <span class="user-detail">
-                        <span class="user-name">John Smilga</span>
-                        <span class="user-role">Super Admin</span>
-                    </span>
-                </span>
-            </a>
-            <div class="dropdown-menu menu-drop-user">
-                <div class="profilename">
-                    <div class="profileset">
-                        <span class="user-img"><img src="{{ URL::asset('/build/img/profiles/avator1.jpg') }}"
-                                alt="">
-                            <span class="status online"></span></span>
-                        <div class="profilesets">
-                            <h6>John Smilga</h6>
-                            <h5>Super Admin</h5>
+                </a>
+                <div class="dropdown-menu menu-drop-user">
+                    <div class="profilename">
+                        <div class="profileset">
+                            <div class="profilesets">
+                                <h6>{{ session('user.name') }}</h6>
+                            </div>
                         </div>
+                        <hr class="m-0">
+                        <a class="dropdown-item" href="{{ url('profile') }}">
+                            <i class="me-2" data-feather="user"></i> My Profile
+                        </a>
+                        <a class="dropdown-item" href="{{ url('general-settings') }}">
+                            <i class="me-2" data-feather="settings"></i> Settings
+                        </a>
+                        <hr class="m-0">
+                        <a class="dropdown-item logout pb-0" href="{{ route('logout') }}">
+                        <img src="{{ URL::asset('/build/img/icons/log-out.svg') }}" class="me-2" alt="img"> Logout
+                        </a>
                     </div>
-                    <hr class="m-0">
-                    <a class="dropdown-item" href="{{ url('profile') }}"> <i class="me-2"
-                            data-feather="user"></i> My Profile</a>
-                    <a class="dropdown-item" href="{{ url('general-settings') }}"><i class="me-2"
-                            data-feather="settings"></i>Settings</a>
-                    <hr class="m-0">
-                    <a class="dropdown-item logout pb-0" href="{{ url('signin') }}"><img
-                            src="{{ URL::asset('/build/img/icons/log-out.svg') }}" class="me-2"
-                            alt="img">Logout</a>
                 </div>
-            </div>
+            @else
+                <div class="nav-link">
+                    <a href="{{ url('signin') }}" class="me-2">Login</a>
+                    <a href="{{ url('register') }}">Register</a>
+                </div>
+            @endif
         </li>
+
     </ul>
     <!-- /Header Menu -->
 

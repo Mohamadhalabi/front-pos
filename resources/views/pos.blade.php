@@ -5,33 +5,34 @@
         <div class="content pos-design p-0">
             <div class="row align-items-start pos-wrapper">
                 <div class="col-md-12 col-lg-8">
-                    <div class="pos-categories tabs_wrapper">
-                        <h5>Categories</h5>
-                        <p>Select From Below Categories</p>
+                    <div class="pos-categories tabs_wrapper {{ app()->getLocale() === 'ar' ? 'rtl' : '' }}">
+                        <h5>{{ __('messages.categories') }}</h5>
+                        <p>{{ __('messages.select_from_categories') }}</p>
+
                         <ul class="tabs owl-carousel pos-category">
                             <li id="all" data-id="all" class="all-tab" style="cursor: pointer;">
                                 <a href="javascript:void(0);">
-                                    <img src="{{ URL::asset('/build/img/categories/category-01.png') }}" alt="Categories">
+                                    <img src="{{ URL::asset('/build/img/categories/category-01.png') }}" alt="{{ __('messages.categories') }}">
                                 </a>
-                                <h6><a href="javascript:void(0);">All Categories</a></h6>
-                                <span>{{$pagination['total']}} Items</span>
+                                <h6><a href="javascript:void(0);">{{ __('messages.all_categories') }}</a></h6>
+                                <span>{{$pagination['total']}} {{ __('messages.items') }}</span>
                             </li>
                             @foreach($categories as $category)
                                 <li id="category-{{$category['id']}}" data-id="{{$category['id']}}" class="category-item" style="cursor: pointer;">
                                     <a href="{{ url()->current() }}?page=1&category={{ $category['id'] }}" class="category-link" onclick="event.stopPropagation();">
-                                        <img src="{{ $category['icon'] }}" alt="Categories" style="mix-blend-mode: multiply;">
+                                        <img src="{{ $category['icon'] }}" alt="{{ __('messages.categories') }}" style="mix-blend-mode: multiply;">
                                     </a>
                                     <h6><a href="{{ url()->current() }}?page=1&category={{ $category['id'] }}" class="category-link" onclick="event.stopPropagation();">{{ $category['name'] }}</a></h6>
                                     <span>
                                         <a href="{{ url()->current() }}?page=1&category={{ $category['id'] }}" class="category-link" onclick="event.stopPropagation();">
-                                        {{$category['products_count']}} Items
+                                        {{$category['products_count']}} {{ __('messages.items') }}
                                         </a>
                                     </span>
                                 </li>
                             @endforeach
                         </ul>
                         <div class="pos-products">
-                            <div class="tabs_container">
+                            <div>
                                 <div class="tab_content active" data-tab="all">
                                     <div class="row" id="product-list">
                                         @foreach($products as $product)
@@ -46,13 +47,11 @@
                                                 <div class="price">
                                                     <div class="row">
                                                         <div class="col-6 price2">
-                                                        <p style="color:red;font-weight:bold;font-size:16px">{{ $product['price'] }}TL</p>
-
+                                                            <p style="color:red;font-weight:bold;font-size:16px">{{ $product['price'] }}TL</p>
                                                         </div>
                                                         <div class="col-6">
-                                                            <p style="float:right">{{ $product['category'] }}</p>
-
-                                                    </div>
+                                                        <p style="float: {{ app()->getLocale() === 'ar' ? 'left' : 'right' }};">{{ $product['category'] }}</p>
+                                                        </div>
                                                     </div>
                                                 </div>
                                             </div>
@@ -81,67 +80,94 @@
                                             <span aria-hidden="true">&raquo;</span>
                                         </a>
                                     </li>
-                                     @endif
-                                    </ul>
-                                </nav>
+                                    @endif
+                                </ul>
+                            </nav>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-12 col-lg-4 ps-0">
+                    <aside class="product-order-list">
+                    <div class="customer-info block-section {{ app()->getLocale() === 'ar' ? 'rtl' : '' }}">
+                        <h6>{{ __('messages.customer_information') }}</h6>
+                        <div class="input-block d-flex align-items-center">
+                            <div class="row">
+                            @if(session('user'))
+                                <div class="col-lg-12 col-sm-12 col-12">
+                                    <div class="input-blocks">
+                                        <label>{{ __('messages.customer_name') }}</label>
+                                        <input type="text" class="form-control" value="{{ session('user.name') }}">
+                                    </div>
+                                </div>
+                                <div class="col-lg-12 col-sm-12 col-12">
+                                    <div class="input-blocks">
+                                        <label>{{ __('messages.phone') }}</label>
+                                        <input type="text" class="form-control" value="{{ session('user.phone') }}">
+                                    </div>
+                                </div>
+                                <div class="col-lg-12 col-sm-12 col-12">
+                                    <div class="input-blocks">
+                                        <label>{{ __('messages.address') }}</label>
+                                        <div class="d-flex align-items-center">
+                                            <input type="text" id="address-input" class="form-control" value="{{ session('user.address') }}">
+                                            <i id="get-location" class="fas fa-map-marker-alt" style="cursor: pointer; margin-left: 8px; margin-right: 8px"></i>
+                                        </div>
+                                    </div>
+                                </div>
+                                @else
+                                <div class="col-lg-12 col-sm-12 col-12">
+                                    <div class="input-blocks">
+                                        <label>{{ __('messages.customer_name') }}</label>
+                                        <input type="text" class="form-control" >
+                                    </div>
+                                </div>
+                                <div class="col-lg-12 col-sm-12 col-12">
+                                    <div class="input-blocks">
+                                        <label>{{ __('messages.phone') }}</label>
+                                        <input type="text" class="form-control">
+                                    </div>
+                                </div>
+                                <div class="col-lg-12 col-sm-12 col-12">
+                                    <div class="input-blocks">
+                                        <label>{{ __('messages.address') }}</label>
+                                        <div class="d-flex align-items-center">
+                                            <input type="text" id="address-input" class="form-control" >
+                                            <i id="get-location" class="fas fa-map-marker-alt" style="cursor: pointer; margin-left: 8px; margin-right: 8px"></i>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                @endif
                             </div>
                         </div>
                     </div>
-                <div class="col-md-12 col-lg-4 ps-0">
-                    <aside class="product-order-list">
-                        <div class="customer-info block-section">
-                            <h6>Customer Information</h6>
-                            <div class="input-block d-flex align-items-center">
-                            <div class="row">
-                            <div class="col-lg-12 col-sm-12 col-12">
-                                <div class="input-blocks">
-                                    <label>Customer Name</label>
-                                    <input type="text" class="form-control">
-                                </div>
-                            </div>
-                            <div class="col-lg-12 col-sm-12 col-12">
-                                <div class="input-blocks">
-                                    <label>Phone</label>
-                                    <input type="text" class="form-control">
-                                </div>
-                            </div>
-                            <div class="col-lg-12 col-sm-12 col-12">
-                                <div class="input-blocks">
-                                    <label>Address</label>
-                                    <div class="d-flex align-items-center">
-                                        <input type="text" id="address-input" class="form-control">
-                                        <i id="get-location" class="fas fa-map-marker-alt" style="cursor: pointer; margin-left: 8px;"></i>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                            </div>
-                        </div>
+
 
                         <div class="product-added block-section">
                             <div class="head-text d-flex align-items-center justify-content-between">
-                                <h6 class="d-flex align-items-center mb-0">Product Added<span class="count">2</span></h6>
-                                <a href="javascript:void(0);" class="d-flex align-items-center text-danger"><span
-                                        class="me-1"><i data-feather="x" class="feather-16"></i></span>Clear all</a>
+                                <h6 class="d-flex align-items-center mb-0">{{ __('messages.product_added') }}<span class="count">2</span></h6>
+                                <a href="javascript:void(0);" class="d-flex align-items-center text-danger">
+                                    <span class="me-1"><i data-feather="x" class="feather-16"></i></span>{{ __('messages.clear_all') }}
+                                </a>
                             </div>
                             <div class="product-wrap" style="height:auto!important">
                                 <div class="product-list d-flex align-items-center justify-content-between">
+                                </div>
                             </div>
                         </div>
 
                         <div class="d-grid btn-block">
                             <a class="btn btn-secondary" href="javascript:void(0);" id="total-price">
-                                Total: 0.00
+                                {{ __('messages.total') }}: 0.00
                             </a>
                         </div>
 
                         <div class="btn-row d-sm-flex align-items-center justify-content-between">
                             <a href="javascript:void(0);" class="btn btn-success btn-icon flex-fill"
-                                data-bs-toggle="modal" data-bs-target="#payment-completed"><span
-                                    class="me-1 d-flex align-items-center"><i data-feather="credit-card"
-                                        class="feather-16"></i></span>Pay</a>
+                                data-bs-toggle="modal" data-bs-target="#payment-completed">
+                                <span class="me-1 d-flex align-items-center"><i data-feather="credit-card" class="feather-16"></i></span>{{ __('messages.pay') }}
+                            </a>
                         </div>
-
                     </aside>
                 </div>
             </div>

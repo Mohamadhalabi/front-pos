@@ -1,0 +1,31 @@
+<?php
+
+return [
+    'categories' => 'Categories',
+    'select_from_categories' => 'Select From Below Categories',
+    'all_categories' => 'All Categories',
+    'items' => 'Items',
+    'customer_information' => 'Customer Information',
+    'customer_name' => 'Customer Name',
+    'phone' => 'Phone',
+    'address' => 'Address',
+    'product_added' => 'Product Added',
+    'clear_all' => 'Clear all',
+    'total' => 'Total',
+    'pay' => 'Pay',
+    'sign_in' => 'Sign In',
+    'email_address' => 'Email Address',
+    'password' => 'Password',
+    'remember_me' => 'Remember me',
+    'forgot_password' => 'Forgot Password?',
+    'new_account' => 'New on our platform? Create an account',
+    'create_account' => 'Create account',
+    'register' => 'Register',
+    'name' => 'Name',
+    'confirm_password' => 'Confirm Password',
+    'sign_up' => 'Sign Up',
+    'already_have_account' => 'Already have an account?',
+    'address' => 'Address',
+    'phone' => 'Phone number',
+
+];

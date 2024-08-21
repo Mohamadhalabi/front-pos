@@ -1,0 +1,32 @@
+<?php
+
+return [
+    'categories' => 'الفئات',
+    'select_from_categories' => 'اختر من الفئات أدناه',
+    'all_categories' => 'جميع الفئات',
+    'items' => 'عناصر',
+    'customer_information' => 'معلومات العميل',
+    'customer_name' => 'اسم العميل',
+    'phone' => 'الهاتف',
+    'address' => 'العنوان',
+    'product_added' => 'المنتجات المضافة',
+    'clear_all' => 'مسح الكل',
+    'total' => 'الإجمالي',
+    'pay' => 'الدفع',
+    'sign_in' => 'تسجيل الدخول',
+    'email_address' => 'عنوان البريد الإلكتروني',
+    'password' => 'كلمة المرور',
+    'remember_me' => 'تذكرني',
+    'forgot_password' => 'نسيت كلمة المرور؟',
+    'new_account' => 'جديد على منصتنا؟ إنشاء حساب',
+    'create_account' => 'إنشاء حساب',
+    'register' => 'تسجيل',
+    'name' => 'الاسم',
+    'confirm_password' => 'تأكيد كلمة المرور',
+    'sign_up' => 'التسجيل',
+    'already_have_account' => 'هل لديك حساب بالفعل؟',
+    'address' => 'العنوان',
+    'phone' => 'رقم الجوال',
+
+
+];
