@@ -72,6 +72,45 @@
         right: auto!important;
     }
 
+    .quick-view-button{
+        display: flex;
+        margin: auto;
+        width: 100%;
+        text-align: center;
+        justify-content: center;
+    }
+
+    .custom-carousel-control .carousel-control-prev-icon,
+.custom-carousel-control .carousel-control-next-icon {
+    background-color: rgba(0, 0, 0, 0.6); /* Dark background for visibility */
+    border-radius: 50%;
+    width: 48px;
+    height: 48px;
+}
+
+.custom-carousel-control {
+    color: black; /* Ensures the arrow icon is black */
+}
+
+.custom-carousel-control .carousel-control-prev-icon,
+.custom-carousel-control .carousel-control-next-icon {
+    background-image: none; /* Removes default icon background */
+}
+
+.custom-carousel-control .carousel-control-prev-icon::after,
+.custom-carousel-control .carousel-control-next-icon::after {
+    content: '‹'; /* Custom arrow character */
+    font-size: 36px;
+    color: white; /* White arrow color for visibility */
+    line-height: 48px;
+    display: block;
+    text-align: center;
+}
+
+.custom-carousel-control .carousel-control-next-icon::after {
+    content: '›'; /* Custom arrow character for next */
+}
+
     </style>
 </head>
 
@@ -117,9 +156,84 @@
 @include('layout.partials.footer-scripts')
 
 <script>
+    var translations = {
+        product_name: "{{ __('messages.product_name') }}",
+        sku: "{{ __('messages.sku') }}",
+        category: "{{ __('messages.category') }}",
+        price: "{{ __('messages.price') }}"
+    };
+</script>
+<script>
+    const messages = @json(trans('validation'));
+</script>
+<script>
 $(document).ready(function() {
 
-var $locationText = $("#address-input");
+    $('.quick-view-button').on('click', function() {
+        var productId = $(this).data('product-id');
+        
+        // Fetch product information based on productId
+        var product = @json($products).find(p => p.id == productId);
+
+        // Populate modal with product data using translations
+        $('#modal-product-name').text(product.name);
+        $('#modal-product-sku').text(translations.sku + product.sku);
+        $('#modal-product-category').text(translations.category + product.category);
+        $('#modal-product-price').text(translations.price + product.price + 'TL');
+
+        // Populate carousel with gallery images
+        var galleryHtml = '';
+        product.gallery.forEach(function(image, index) {
+            galleryHtml += `
+                <div class="carousel-item ${index === 0 ? 'active' : ''}">
+                    <img src="${image}" class="d-block w-100" alt="Product Image ${index + 1}">
+                </div>`;
+        });
+        $('#modal-product-gallery').html(galleryHtml);
+
+        // Show or hide carousel controls based on the number of images
+        if (product.gallery.length > 1) {
+            $('.custom-carousel-control').show();
+        } else {
+            $('.custom-carousel-control').hide();
+        }
+
+        // Group attributes by their name and remove duplicates
+        var groupedAttributes = {};
+        product.attributes.forEach(function(attribute) {
+            if (!groupedAttributes[attribute.attribute]) {
+                groupedAttributes[attribute.attribute] = new Set(); // Use a Set to avoid duplicates
+            }
+            groupedAttributes[attribute.attribute].add(attribute.sub_attribute);
+        });
+
+        // Populate attributes table
+        var attributesHtml = '';
+        for (var key in groupedAttributes) {
+            if (groupedAttributes.hasOwnProperty(key)) {
+                attributesHtml += `
+                    <tr>
+                        <td>${key}</td>
+                        <td>${Array.from(groupedAttributes[key]).join(', ')}</td>
+                    </tr>`;
+            }
+        }
+
+        // Display the attributes section if there are any attributes
+        if (attributesHtml !== '') {
+            $('#modal-attributes-title').show(); // Show the title
+            $('#modal-product-attributes').html(attributesHtml);
+        } else {
+            $('#modal-attributes-title').hide(); // Hide the title if no attributes
+            $('#modal-product-attributes').html('');
+        }
+
+        // Show the modal
+        $('#quickViewModal').modal('show');
+    });
+
+
+var $locationText = $("#customer_address");
 
 // Check for geolocation browser support and execute success method on click
 $("#get-location").on("click", function () {
@@ -306,6 +420,12 @@ function highlightCartItems() {
 
 // Load cart items on page load
 loadCart();
+updateCartCount();
+
+function updateCartCount() {
+        const itemCount = cartItems.length; // Get the current number of items in the cart
+        $('.count').text(itemCount); // Update the count display
+    }
 
 // Handle product click on the product list only
 $(document).on('click', '.product-info:not(.cart-item)', function() {
@@ -329,6 +449,7 @@ $(document).on('click', '.product-info:not(.cart-item)', function() {
 
     saveCart();
     updateCartDisplay();
+    updateCartCount();
 });
 
 // Handle delete from cart
@@ -337,6 +458,7 @@ $(document).on('click', '.delete-icon', function() {
     cartItems.splice(index, 1);
     saveCart();
     updateCartDisplay();
+    updateCartCount();
 });
 
 // Handle increment and decrement of quantity
@@ -345,6 +467,7 @@ $(document).on('click', '.inc', function() {
     cartItems[index].quantity += 1;
     saveCart();
     updateCartDisplay();
+    updateCartCount();
 });
 
 $(document).on('click', '.dec', function() {
@@ -354,8 +477,120 @@ $(document).on('click', '.dec', function() {
     }
     saveCart();
     updateCartDisplay();
+    updateCartCount();
 });
+
+$('a.text-danger').on('click', function() {
+        // Clear the cartItems array
+        cartItems = [];
+        saveCart(); // Save the empty cart to localStorage
+        updateCartDisplay(); // Update the display to reflect the empty cart
+        updateCartCount();
+    });
+
+
+
+    // Handle payment button click
+    $('.submit_order').on('click', function() {
+
+        console.log(cartItems);
+        console.log(cartItems.length)
+
+
+
+    // Get the customer information
+    const customerName = $('#customer_name').val();
+    const phone = $('#user_phone').val();
+    const address = $('#customer_address').val();
+
+    if(cartItems.length === 0){
+        Swal.fire({
+            icon: 'warning',
+            title: 'Empty Cart',
+            text: messages.empty_cart, // Uses the message based on the current locale
+            confirmButtonText: 'OK'
+        });     
+    }
+
+    // Check if customer name is less than 3 characters
+    else if (customerName.length < 3) {
+        Swal.fire({
+            icon: 'warning',
+            title: 'Invalid Name',
+            text: messages.invalid_name, // Uses the message based on the current locale
+            confirmButtonText: 'OK'
+        });
+    } 
+    // Check if phone number is less than 4 characters
+    else if (phone.length < 4) {
+        Swal.fire({
+            icon: 'warning',
+            title: 'Invalid Phone',
+            text: messages.invalid_phone, // Uses the message based on the current locale
+            confirmButtonText: 'OK'
+        });
+    } 
+    // Check if address is less than 6 characters
+    else if (address.length < 6) {
+        Swal.fire({
+            icon: 'warning',
+            title: 'Invalid Address',
+            text: messages.invalid_address, // Uses the message based on the current locale
+            confirmButtonText: 'OK'
+        });
+    } 
+    else {
+        // Prepare the data to send to the backend
+        const cartData = {
+            customer: {
+                name: customerName,
+                phone: phone,
+                address: address
+            },
+            items: cartItems // Assuming cartItems contains the products in the cart
+        };
+
+        // Send the cart data to the backend using AJAX
+        $.ajax({
+            url: '/your-backend-endpoint', // Replace with your backend endpoint
+            method: 'POST',
+            contentType: 'application/json',
+            data: JSON.stringify(cartData),
+            success: function(response) {
+                // Handle successful response
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Payment Successful',
+                    text: 'Your order has been placed successfully!',
+                    confirmButtonText: 'OK'
+                });
+                // Optionally, clear the cart and update display
+                cartItems = [];
+                saveCart();
+                updateCartDisplay();
+                updateCartCount();
+            },
+            error: function(xhr, status, error) {
+                // Handle error response
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Payment Failed',
+                    text: 'There was an issue processing your payment. Please try again later.',
+                    confirmButtonText: 'OK'
+                });
+            }
+        });
+    }
+    });
+
+
+
+
+
 });
+
+
+
 
 
 </script>

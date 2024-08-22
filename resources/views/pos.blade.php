@@ -9,6 +9,7 @@
                         <h5>{{ __('messages.categories') }}</h5>
                         <p>{{ __('messages.select_from_categories') }}</p>
 
+                        <!-- Categories Section -->
                         <ul class="tabs owl-carousel pos-category">
                             <li id="all" data-id="all" class="all-tab" style="cursor: pointer;">
                                 <a href="javascript:void(0);">
@@ -31,13 +32,15 @@
                                 </li>
                             @endforeach
                         </ul>
+
+                        <!-- Products Section -->
                         <div class="pos-products">
                             <div>
-                                <div class="tab_content active" data-tab="all">
+                                <div class="tab_content active mb-5" data-tab="all">
                                     <div class="row" id="product-list">
                                         @foreach($products as $product)
                                         <div class="col-sm-4 col-md-6 col-lg-4 col-xl-3 pe-2">
-                                            <div class="product-info default-cover card">
+                                            <div class="product-info default-cover card mb-0">
                                                 <a href="javascript:void(0);" class="img-bg">
                                                     <img src="{{ $product['image'] }}" alt="Products" width="100" height="100" style="mix-blend-mode: multiply;">
                                                     <span><i data-feather="check" class="feather-16"></i></span>
@@ -55,11 +58,14 @@
                                                     </div>
                                                 </div>
                                             </div>
+                                            <button type="button" class="btn btn-secondary quick-view-button" data-product-id="{{ $product['id'] }}">Quick View</button>
                                         </div>
                                         @endforeach
                                     </div>
                                 </div>
                             </div>
+
+                            <!-- Pagination -->
                             <nav aria-label="Page navigation example" id="pagination-links">
                                 <ul class="pagination justify-content-center">
                                     @if($pagination['current_page'] > 1)
@@ -88,61 +94,61 @@
                 </div>
                 <div class="col-md-12 col-lg-4 ps-0">
                     <aside class="product-order-list">
-                    <div class="customer-info block-section {{ app()->getLocale() === 'ar' ? 'rtl' : '' }}">
-                        <h6>{{ __('messages.customer_information') }}</h6>
-                        <div class="input-block d-flex align-items-center">
-                            <div class="row">
-                            @if(session('user'))
-                                <div class="col-lg-12 col-sm-12 col-12">
-                                    <div class="input-blocks">
-                                        <label>{{ __('messages.customer_name') }}</label>
-                                        <input type="text" class="form-control" value="{{ session('user.name') }}">
-                                    </div>
-                                </div>
-                                <div class="col-lg-12 col-sm-12 col-12">
-                                    <div class="input-blocks">
-                                        <label>{{ __('messages.phone') }}</label>
-                                        <input type="text" class="form-control" value="{{ session('user.phone') }}">
-                                    </div>
-                                </div>
-                                <div class="col-lg-12 col-sm-12 col-12">
-                                    <div class="input-blocks">
-                                        <label>{{ __('messages.address') }}</label>
-                                        <div class="d-flex align-items-center">
-                                            <input type="text" id="address-input" class="form-control" value="{{ session('user.address') }}">
-                                            <i id="get-location" class="fas fa-map-marker-alt" style="cursor: pointer; margin-left: 8px; margin-right: 8px"></i>
+                        <!-- Customer Info Section -->
+                        <div class="customer-info block-section {{ app()->getLocale() === 'ar' ? 'rtl' : '' }}">
+                            <h6>{{ __('messages.customer_information') }}</h6>
+                            <div class="input-block d-flex align-items-center">
+                                <div class="row">
+                                    @if(session('user'))
+                                        <div class="col-lg-12 col-sm-12 col-12">
+                                            <div class="input-blocks">
+                                                <label>{{ __('messages.customer_name') }}</label>
+                                                <input type="text" name="customer_name" id="customer_name" class="form-control" value="{{ session('user.name') }}">
+                                            </div>
                                         </div>
-                                    </div>
-                                </div>
-                                @else
-                                <div class="col-lg-12 col-sm-12 col-12">
-                                    <div class="input-blocks">
-                                        <label>{{ __('messages.customer_name') }}</label>
-                                        <input type="text" class="form-control" >
-                                    </div>
-                                </div>
-                                <div class="col-lg-12 col-sm-12 col-12">
-                                    <div class="input-blocks">
-                                        <label>{{ __('messages.phone') }}</label>
-                                        <input type="text" class="form-control">
-                                    </div>
-                                </div>
-                                <div class="col-lg-12 col-sm-12 col-12">
-                                    <div class="input-blocks">
-                                        <label>{{ __('messages.address') }}</label>
-                                        <div class="d-flex align-items-center">
-                                            <input type="text" id="address-input" class="form-control" >
-                                            <i id="get-location" class="fas fa-map-marker-alt" style="cursor: pointer; margin-left: 8px; margin-right: 8px"></i>
+                                        <div class="col-lg-12 col-sm-12 col-12">
+                                            <div class="input-blocks">
+                                                <label>{{ __('messages.phone') }}</label>
+                                                <input type="text" name="user_phone" id="user_phone" class="form-control" value="{{ session('user.phone') }}">
+                                            </div>
                                         </div>
-                                    </div>
+                                        <div class="col-lg-12 col-sm-12 col-12">
+                                            <div class="input-blocks">
+                                                <label>{{ __('messages.address') }}</label>
+                                                <div class="d-flex align-items-center">
+                                                    <input type="text" id="customer_address" class="form-control" value="{{ session('user.address') }}">
+                                                    <i id="get-location" class="fas fa-map-marker-alt" style="cursor: pointer; margin-left: 8px; margin-right: 8px"></i>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    @else
+                                        <div class="col-lg-12 col-sm-12 col-12">
+                                            <div class="input-blocks">
+                                                <label>{{ __('messages.customer_name') }}</label>
+                                                <input type="text" name="customer_name" id="customer_name" class="form-control">
+                                            </div>
+                                        </div>
+                                        <div class="col-lg-12 col-sm-12 col-12">
+                                            <div class="input-blocks">
+                                                <label>{{ __('messages.phone') }}</label>
+                                                <input type="text" name="user_phone" id="user_phone" class="form-control">
+                                            </div>
+                                        </div>
+                                        <div class="col-lg-12 col-sm-12 col-12">
+                                            <div class="input-blocks">
+                                                <label>{{ __('messages.address') }}</label>
+                                                <div class="d-flex align-items-center">
+                                                    <input type="text" id="customer_address" class="form-control">
+                                                    <i id="get-location" class="fas fa-map-marker-alt" style="cursor: pointer; margin-left: 8px; margin-right: 8px"></i>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    @endif
                                 </div>
-
-                                @endif
                             </div>
                         </div>
-                    </div>
 
-
+                        <!-- Products Added Section -->
                         <div class="product-added block-section">
                             <div class="head-text d-flex align-items-center justify-content-between">
                                 <h6 class="d-flex align-items-center mb-0">{{ __('messages.product_added') }}<span class="count">2</span></h6>
@@ -156,6 +162,7 @@
                             </div>
                         </div>
 
+                        <!-- Payment and Total Section -->
                         <div class="d-grid btn-block">
                             <a class="btn btn-secondary" href="javascript:void(0);" id="total-price">
                                 {{ __('messages.total') }}: 0.00
@@ -163,8 +170,7 @@
                         </div>
 
                         <div class="btn-row d-sm-flex align-items-center justify-content-between">
-                            <a href="javascript:void(0);" class="btn btn-success btn-icon flex-fill"
-                                data-bs-toggle="modal" data-bs-target="#payment-completed">
+                            <a href="javascript:void(0);" class="btn btn-success btn-icon flex-fill submit_order">
                                 <span class="me-1 d-flex align-items-center"><i data-feather="credit-card" class="feather-16"></i></span>{{ __('messages.pay') }}
                             </a>
                         </div>
@@ -173,4 +179,45 @@
             </div>
         </div>
     </div>
+    <!-- Modal Structure -->
+    <div class="modal fade" id="quickViewModal" tabindex="-1" aria-labelledby="quickViewModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="quickViewModalLabel">{{ __('messages.quick_view') }}</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <!-- Carousel for Gallery Images -->
+                <div id="productCarousel" class="carousel slide" data-bs-ride="carousel">
+                    <div class="carousel-inner" id="modal-product-gallery">
+                        <!-- Gallery images will be inserted here by JavaScript -->
+                    </div>
+                    <a class="carousel-control-prev custom-carousel-control" href="#productCarousel" role="button" data-bs-slide="prev">
+                        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                        <span class="visually-hidden">{{ __('messages.previous') }}</span>
+                    </a>
+                    <a class="carousel-control-next custom-carousel-control" href="#productCarousel" role="button" data-bs-slide="next">
+                        <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                        <span class="visually-hidden">{{ __('messages.next') }}</span>
+                    </a>
+                </div>
+
+                <h5 id="modal-product-name" class="mt-3 mb-2"></h5>
+                <h6 class="cat-name mb-2"><a class="product-category" id="modal-product-sku" href="javascript:void(0);"></a></h6>
+                <p id="modal-product-category" class="mb-2"></p>
+                <p id="modal-product-price" class="mb-2" style="color:red;font-weight:bold;font-size:16px">TL</p>
+
+                <!-- Attribute Table -->
+                <h5 id="modal-attributes-title" class="mt-3 mb-2">{{ __('messages.attributes') }}</h5>
+                <table class="table table-bordered">
+                    <tbody id="modal-product-attributes">
+                        <!-- Attributes will be inserted here by JavaScript -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
 @endsection
