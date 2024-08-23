@@ -58,7 +58,7 @@
                                                     </div>
                                                 </div>
                                             </div>
-                                            <button type="button" class="btn btn-secondary quick-view-button" data-product-id="{{ $product['id'] }}">Quick View</button>
+                                            <button type="button" class="btn btn-secondary quick-view-button" data-product-id="{{ $product['id'] }}">{{ __('messages.quickview') }}</button>
                                         </div>
                                         @endforeach
                                     </div>
@@ -219,5 +219,6 @@
         </div>
     </div>
 </div>
+<audio id="click-sound" src="{{ asset('audio/sound.mp3') }}" preload="auto"></audio>
 
 @endsection

@@ -41,4 +41,5 @@ return [
     'invalid_address' => 'Address must be at least 6 characters long.',
     'payment_success' => 'Your order has been placed successfully!',
     'payment_failed' => 'There was an issue processing your payment. Please try again later.',
+    'quickview' => 'Quick View',
 ];

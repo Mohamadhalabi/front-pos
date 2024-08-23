@@ -173,6 +173,9 @@
     const API_KEY = '{{ env('API_KEY', 'default_value') }}'; // Set the API key
 $(document).ready(function() {
 
+    $('#product-list .product-info').on('click', function() {
+        $('#click-sound')[0].play();
+    });
     $('.quick-view-button').on('click', function() {
         var productId = $(this).data('product-id');
         
@@ -571,21 +574,19 @@ $('.submit_order').on('click', function() {
         },
         data: JSON.stringify(cartData),
         success: function(response) {
-            console.log(response);
-            console.log("TEST");
-            // Handle successful response
-            Swal.fire({
-                icon: 'success',
-                title: 'Payment Successful',
-                text: messages.payment_success,
-                confirmButtonText: 'OK'
-            });
+            // Check if the response contains the WhatsApp link
+            if (response.whatsapp_link) {
+                // Redirect to the WhatsApp link in a new page
+                window.location.href = response.whatsapp_link;
+            }
+
             // Optionally, clear the cart and update display
             cartItems = [];
             saveCart();
             updateCartDisplay();
             updateCartCount();
         },
+
         error: function(xhr, status, error) {
             // Handle error response
             Swal.fire({
