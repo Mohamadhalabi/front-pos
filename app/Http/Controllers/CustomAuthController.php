@@ -14,8 +14,8 @@ class CustomAuthController extends Controller
 
     public function index()
     {
-        
-        return view('signin-3');
+        $products = [];
+        return view('signin-3',compact('products'));
     }  
       
 
@@ -59,7 +59,8 @@ class CustomAuthController extends Controller
     
     public function registration()
     {
-        return view('register-3');
+        $products = [];
+        return view('register-3',compact('products'));
     }
       
 
@@ -89,7 +90,7 @@ class CustomAuthController extends Controller
         
 
         if ($response->successful()) {
-            return redirect()->route('signin')->with('message', 'User registered successfully');
+            return redirect()->route('signinn')->with('message', 'User registered successfully');
         }
 
         return back()->withErrors(['error' => $response->json('message')]);

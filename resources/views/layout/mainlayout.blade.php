@@ -165,8 +165,12 @@
 </script>
 <script>
     const messages = @json(trans('validation'));
+    const messages2 = @json(trans('messages'));
 </script>
 <script>
+    const API_BASE_URL = '{{ env('API_BASE_URL', 'default_value') }}'; // Set the API base URL
+    const SECRET_KEY = '{{ env('SECRET_KEY', 'default_value') }}'; // Set the secret key
+    const API_KEY = '{{ env('API_KEY', 'default_value') }}'; // Set the API key
 $(document).ready(function() {
 
     $('.quick-view-button').on('click', function() {
@@ -490,98 +494,111 @@ $('a.text-danger').on('click', function() {
 
 
 
-    // Handle payment button click
-    $('.submit_order').on('click', function() {
-
-        console.log(cartItems);
-        console.log(cartItems.length)
-
-
+// Handle payment button click
+$('.submit_order').on('click', function() {
 
     // Get the customer information
     const customerName = $('#customer_name').val();
     const phone = $('#user_phone').val();
     const address = $('#customer_address').val();
 
-    if(cartItems.length === 0){
+    const userLanguage = navigator.language.startsWith('ar') ? 'ar' : 'en';
+    var userSession = @json(session('user'));
+
+    const userId = userSession ? userSession.id : null;
+
+    if (cartItems.length === 0) {
         Swal.fire({
             icon: 'warning',
             title: 'Empty Cart',
-            text: messages.empty_cart, // Uses the message based on the current locale
+            text: messages2.empty_cart,
             confirmButtonText: 'OK'
-        });     
+        });
+        return; // Early return to prevent AJAX call
     }
-
     // Check if customer name is less than 3 characters
     else if (customerName.length < 3) {
         Swal.fire({
             icon: 'warning',
             title: 'Invalid Name',
-            text: messages.invalid_name, // Uses the message based on the current locale
+            text: messages2.invalid_name,
             confirmButtonText: 'OK'
         });
-    } 
+        return; // Early return to prevent AJAX call
+    }
     // Check if phone number is less than 4 characters
     else if (phone.length < 4) {
         Swal.fire({
             icon: 'warning',
             title: 'Invalid Phone',
-            text: messages.invalid_phone, // Uses the message based on the current locale
+            text: messages2.invalid_phone,
             confirmButtonText: 'OK'
         });
-    } 
+        return; // Early return to prevent AJAX call
+    }
     // Check if address is less than 6 characters
     else if (address.length < 6) {
         Swal.fire({
             icon: 'warning',
             title: 'Invalid Address',
-            text: messages.invalid_address, // Uses the message based on the current locale
+            text: messages2.invalid_address,
             confirmButtonText: 'OK'
         });
-    } 
-    else {
-        // Prepare the data to send to the backend
-        const cartData = {
-            customer: {
-                name: customerName,
-                phone: phone,
-                address: address
-            },
-            items: cartItems // Assuming cartItems contains the products in the cart
-        };
-
-        // Send the cart data to the backend using AJAX
-        $.ajax({
-            url: '/your-backend-endpoint', // Replace with your backend endpoint
-            method: 'POST',
-            contentType: 'application/json',
-            data: JSON.stringify(cartData),
-            success: function(response) {
-                // Handle successful response
-                Swal.fire({
-                    icon: 'success',
-                    title: 'Payment Successful',
-                    text: 'Your order has been placed successfully!',
-                    confirmButtonText: 'OK'
-                });
-                // Optionally, clear the cart and update display
-                cartItems = [];
-                saveCart();
-                updateCartDisplay();
-                updateCartCount();
-            },
-            error: function(xhr, status, error) {
-                // Handle error response
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Payment Failed',
-                    text: 'There was an issue processing your payment. Please try again later.',
-                    confirmButtonText: 'OK'
-                });
-            }
-        });
+        return; // Early return to prevent AJAX call
     }
+    
+    // Prepare the data to send to the backend
+    const cartData = {
+        customer: {
+            name: customerName,
+            phone: phone,
+            address: address,
+            userId: userId 
+        },
+        items: cartItems // Assuming cartItems contains the products in the cart
+    };
+    // Send the cart data to the backend using AJAX
+    $.ajax({
+        url: `${API_BASE_URL}/create-order`, // Use the API_BASE_URL and endpoint for creating an order
+        method: 'POST',
+        contentType: 'application/json',
+        headers: {
+            'Accept-Language': userLanguage, // Set the language header based on user preference
+            'Content-Type': 'application/json',
+            'Accept': 'application/json',
+            'secret-key': SECRET_KEY, // Use the secret key from the environment
+            'api-key': API_KEY // Use the API key from the environment
+        },
+        data: JSON.stringify(cartData),
+        success: function(response) {
+            console.log(response);
+            console.log("TEST");
+            // Handle successful response
+            Swal.fire({
+                icon: 'success',
+                title: 'Payment Successful',
+                text: messages.payment_success,
+                confirmButtonText: 'OK'
+            });
+            // Optionally, clear the cart and update display
+            cartItems = [];
+            saveCart();
+            updateCartDisplay();
+            updateCartCount();
+        },
+        error: function(xhr, status, error) {
+            // Handle error response
+            Swal.fire({
+                icon: 'error',
+                title: 'Payment Failed',
+                text: messages.payment_failed,
+                confirmButtonText: 'OK'
+            });
+        }
     });
+});
+
+
 
 
 

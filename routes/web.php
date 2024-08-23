@@ -14,9 +14,9 @@ use App\Http\Controllers\CustomAuthController;
 |
 */
 Route::get('index', [CustomAuthController::class, 'dashboard']); 
-Route::get('login', [CustomAuthController::class, 'index'])->name('signin');
+Route::get('login', [CustomAuthController::class, 'index'])->name('signinn');
 Route::post('custom-login', [CustomAuthController::class, 'customSignin'])->name('signin.custom'); 
-Route::get('signup', [CustomAuthController::class, 'registration'])->name('register');
+Route::get('signup', [CustomAuthController::class, 'registration'])->name('register.custom');
 Route::post('customer-register', [CustomAuthController::class, 'customRegister'])->name('customer-register'); 
 Route::get('signout', [CustomAuthController::class, 'signOut'])->name('signout');
 Route::get('logout', [CustomAuthController::class, 'logout'])->name('logout');

@@ -90,7 +90,7 @@
                 </div>
             @else
                 <div class="nav-link">
-                    <a href="{{ url('signin') }}" class="me-2">Login</a>
+                    <a href="{{ url('login') }}" class="me-2">Login</a>
                     <a href="{{ url('register') }}">Register</a>
                 </div>
             @endif

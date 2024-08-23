@@ -51,7 +51,7 @@
                                 <button class="btn btn-login" type="submit">{{ __('messages.sign_in') }}</button>
                             </div>
                             <div class="signinform">
-                                <h4>{{ __('messages.new_account') }} <a href="{{ url('register-3') }}" class="hover-a"> {{ __('messages.create_account') }}</a></h4>
+                                <h4>{{ __('messages.new_account') }} <a href="{{ url('signup') }}" class="hover-a"> {{ __('messages.create_account') }}</a></h4>
                             </div>
                         </div>
                     </form>
