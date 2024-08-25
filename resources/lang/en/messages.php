@@ -42,4 +42,16 @@ return [
     'payment_success' => 'Your order has been placed successfully!',
     'payment_failed' => 'There was an issue processing your payment. Please try again later.',
     'quickview' => 'Quick View',
+    'turkishlira'=> "TL",
+    'description' => 'Description',
+    'Login' => 'Login',
+    'Register' => 'Register',
+
+    'modal' => [
+        'map_modal' => [
+            'title' => 'Select Location',
+            'close' => 'Close',
+            'save_changes' => 'Save changes',
+        ],
+    ],
 ];

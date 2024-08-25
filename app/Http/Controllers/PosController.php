@@ -25,6 +25,8 @@ class PosController extends Controller
 
         $selected_category = $request->input('category', 'all');
 
+        $search = $request->input('search', '');
+
         $response = Http::withHeaders([
             'Accept-Language' => app()->getLocale(),
             'Content-Type' => 'application/json',
@@ -34,11 +36,13 @@ class PosController extends Controller
         ])->get(env('API_BASE_URL', 'default_value') . '/all-products', [
             'page' => $page,
             'selected_category' => $selected_category,
+            'search' => $search,
         ]);
     
         $data = $response->json();
-
+        
         $products = $data['products'];
+
         $pagination = $data['pagination'];
 
         return view('pos', compact('products', 'pagination','categories'));

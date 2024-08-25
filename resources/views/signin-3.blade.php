@@ -27,7 +27,6 @@
                                 <label class="form-label">{{ __('messages.email_address') }}</label>
                                 <div class="form-addons">
                                     <input type="email" name="email" required class="form-control" value="{{ old('email') }}">
-                                    <img class="email-icon" src="{{ URL::asset('/build/img/icons/mail.svg') }}" alt="img">
                                 </div>
                             </div>
 
@@ -42,7 +41,7 @@
                             <div class="form-login authentication-check">
                                 <div class="row">
                                     <div class="col-12 text-end">
-                                        <a class="forgot-link" href="{{ url('forgot-password-3') }}">{{ __('messages.forgot_password') }}</a>
+                                        <!-- <a class="forgot-link" href="{{ url('forgot-password-3') }}">{{ __('messages.forgot_password') }}</a> -->
                                     </div>
                                 </div>
                             </div>

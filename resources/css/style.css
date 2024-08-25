@@ -21824,7 +21824,6 @@ body.mini-sidebar.expand-menu .sidebar .sidebar-menu > ul > li.submenu-open ul l
   position: relative;
 }
 .login-wrapper .login-content .form-login .form-addons img {
-  position: absolute;
   top: 16px;
   right: 20px;
 }

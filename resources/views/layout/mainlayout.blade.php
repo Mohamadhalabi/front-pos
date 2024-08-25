@@ -4,15 +4,10 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0">
-    <meta name="description" content="POS - Bootstrap Admin Template">
-    <meta name="keywords"
-        content="admin, estimates, bootstrap, business, corporate, creative, invoice, html5, responsive, Projects">
-    <meta name="author" content="Dreamguys - Bootstrap Admin Template">
-    <meta name="robots" content="noindex, nofollow">
-    <title>Dreams Pos Admin Template</title>
+    <title>{{$settings['data']['setting']['website']['system_name']}}</title>
 
     <!-- Favicon -->
-    <link rel="shortcut icon" type="image/x-icon" href="{{ URL::asset('/build/img/favicon.png')}}">
+    <link rel="shortcut icon" type="image/x-icon" href="{{$settings['data']['setting']['website']['system_logo_icon']}}">
 
     @include('layout.partials.head')
 
@@ -111,6 +106,76 @@
     content: '›'; /* Custom arrow character for next */
 }
 
+.carousel-controls {
+    position: relative;
+    top: -50%; /* Adjust the top position according to your design */
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+}
+
+.carousel-prev,
+.carousel-next {
+    background-color: rgba(0, 0, 0, 0.5);
+    color: #fff;
+    border: none;
+    padding: 10px 20px;
+    cursor: pointer;
+    font-size: 24px;
+    position: absolute;
+    z-index: 10;
+    top: -200px;
+}
+
+.carousel-prev {
+    left: 10px;
+}
+
+.carousel-next {
+    right: 10px;
+}
+
+.carousel-prev:hover,
+.carousel-next:hover {
+    background-color: rgba(0, 0, 0, 0.7);
+}
+
+#search-results {
+    border: 1px solid #ccc;
+    max-height: 300px;
+    overflow-y: auto;
+    background: white;
+    padding: 10px;
+}
+
+.result-item {
+    padding: 10px 0;
+    cursor: pointer;
+}
+
+.result-item:hover {
+    background-color: #f8f8f8;
+}
+
+.result-item img {
+    border-radius: 4px;
+}
+.price4{
+    color:red!important;
+}
+
+
+@media screen and (min-width:992px){
+    #search{
+        width:500px!important;
+    }
+}
+@media screen and (max-width:992px){
+    #search{
+        width:100%;
+    }
+}
+
     </style>
 </head>
 
@@ -154,13 +219,18 @@
 @component('components.modalpopup')
 @endcomponent
 @include('layout.partials.footer-scripts')
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
+  
+  <!-- Leaflet JavaScript -->
+  <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
 
 <script>
     var translations = {
         product_name: "{{ __('messages.product_name') }}",
         sku: "{{ __('messages.sku') }}",
         category: "{{ __('messages.category') }}",
-        price: "{{ __('messages.price') }}"
+        price: "{{ __('messages.price') }}",
+        turkishlira: "{{ __('messages.turkishlira') }}"
     };
 </script>
 <script>
@@ -172,88 +242,265 @@
     const SECRET_KEY = '{{ env('SECRET_KEY', 'default_value') }}'; // Set the secret key
     const API_KEY = '{{ env('API_KEY', 'default_value') }}'; // Set the API key
 $(document).ready(function() {
+    $('.owl-tt').owlCarousel({
+    loop: true,
+    margin: 10,
+    dots: false,
+    nav: false,  // Disable default navigation
+    responsive: {
+        0: {
+            items: 1
+        },
+        600: {
+            items: 1
+        },
+        1000: {
+            items: 1
+        }
+    }
+});
+
+
+
+        $('#search').on('input', function() {
+            const userLanguage = navigator.language.startsWith('ar') ? 'ar' : 'en';
+            var query = $(this).val();
+
+            if (query.length >= 3) {
+                $.ajax({
+                    url: `${API_BASE_URL}/search-products`, // Use the API_BASE_URL and endpoint for creating an order
+                    method: 'GET',
+                    data: { q: query },
+                    headers: {
+                        'Accept-Language': userLanguage, // Set the language header based on user preference
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json',
+                        'secret-key': SECRET_KEY, // Use the secret key from the environment
+                        'api-key': API_KEY // Use the API key from the environment
+                    },
+                    success: function(data) {
+                        // Clear previous results
+                        $('#search-results').empty().show();
+
+                        if (data.products.length > 0) {
+                            data.products.forEach(function(item) {
+                                $('#search-results').append(`
+                                    <div class="result-item d-flex align-items-center" data-sku="${item.sku}">
+                                        <img src="${item.image}" alt="${item.name}" style="width: 50px; height: 50px; margin-right: 10px;">
+                                        <div>
+                                            <div><strong>${item.name}</strong></div>
+                                            <div style="color:green">${translations.sku}: ${item.sku}</div>
+                                            <div style="color:red">${translations.price}: ${item.sale_price ? item.sale_price : item.price} ${translations.turkishlira}</div>
+                                        </div>
+                                    </div>
+                                    <hr>
+                                `);
+                            });
+
+                            // Add click event to result items
+                            $('.result-item').on('click', function() {
+                                var sku = $(this).data('sku');
+                                window.location.href = `${window.location.origin}/pos?search=${sku}`;
+                            });
+                        } else {
+                            $('#search-results').append('<div class="result-item">No results found</div>');
+                        }
+                    },
+                    error: function() {
+                        $('#search-results').empty().append('<div class="result-item">An error occurred</div>').show();
+                    }
+                });
+            } else {
+                $('#search-results').hide();
+            }
+        });
+
+
+
+
+
+    // Custom Navigation Events
+    $('.carousel-prev').click(function() {
+        $('.owl-tt').trigger('prev.owl.carousel');
+    });
+
+    $('.carousel-next').click(function() {
+        $('.owl-tt').trigger('next.owl.carousel');
+    });
+
+
+    var map, marker;
 
     $('#product-list .product-info').on('click', function() {
         $('#click-sound')[0].play();
     });
     $('.quick-view-button').on('click', function() {
-        var productId = $(this).data('product-id');
-        
-        // Fetch product information based on productId
-        var product = @json($products).find(p => p.id == productId);
+    var productId = $(this).data('product-id');
+    
+    // Fetch product information based on productId
+    var product = @json($products).find(p => p.id == productId);
 
-        // Populate modal with product data using translations
-        $('#modal-product-name').text(product.name);
-        $('#modal-product-sku').text(translations.sku + product.sku);
-        $('#modal-product-category').text(translations.category + product.category);
-        $('#modal-product-price').text(translations.price + product.price + 'TL');
+    // Populate modal with product data using translations
+    $('#modal-product-name').text(product.name);
+    $('#modal-product-sku').text(translations.sku + " " +  product.sku);
+    $('#modal-product-category').text(translations.category + " " + product.category);
 
-        // Populate carousel with gallery images
-        var galleryHtml = '';
-        product.gallery.forEach(function(image, index) {
-            galleryHtml += `
-                <div class="carousel-item ${index === 0 ? 'active' : ''}">
-                    <img src="${image}" class="d-block w-100" alt="Product Image ${index + 1}">
-                </div>`;
-        });
-        $('#modal-product-gallery').html(galleryHtml);
+    var priceText = product.price + ' ' + translations.turkishlira;
+    var salePriceText = product.sale_price + ' ' + translations.turkishlira;
 
-        // Show or hide carousel controls based on the number of images
-        if (product.gallery.length > 1) {
-            $('.custom-carousel-control').show();
-        } else {
-            $('.custom-carousel-control').hide();
-        }
+    if (product.sale_price != null && product.sale_price != 0) {
+        // Display sale price and original price
+        $('#modal-product-price').html(
+            '<span style="color:grey">' + translations.price + ' </span>' +
+            '<span style="color: gray; text-decoration: line-through;">' + priceText + '</span>' +
+            '<span style="color: red;"> ' + salePriceText + '</span>'
+        );
+    } else {
+        // Display only the original price
+        $('#modal-product-price').html(
+            '<span style="color: grey;">' + translations.price + '</span> <span style="color:red"> ' + priceText + '</span>'
+        );
+    }
 
-        // Group attributes by their name and remove duplicates
-        var groupedAttributes = {};
-        product.attributes.forEach(function(attribute) {
-            if (!groupedAttributes[attribute.attribute]) {
-                groupedAttributes[attribute.attribute] = new Set(); // Use a Set to avoid duplicates
-            }
-            groupedAttributes[attribute.attribute].add(attribute.sub_attribute);
-        });
+    
+    $('#modal-product-description').html(product.description);
 
-        // Populate attributes table
-        var attributesHtml = '';
-        for (var key in groupedAttributes) {
-            if (groupedAttributes.hasOwnProperty(key)) {
-                attributesHtml += `
-                    <tr>
-                        <td>${key}</td>
-                        <td>${Array.from(groupedAttributes[key]).join(', ')}</td>
-                    </tr>`;
-            }
-        }
-
-        // Display the attributes section if there are any attributes
-        if (attributesHtml !== '') {
-            $('#modal-attributes-title').show(); // Show the title
-            $('#modal-product-attributes').html(attributesHtml);
-        } else {
-            $('#modal-attributes-title').hide(); // Hide the title if no attributes
-            $('#modal-product-attributes').html('');
-        }
-
-        // Show the modal
-        $('#quickViewModal').modal('show');
+    // Populate carousel with gallery images
+    var galleryHtml = '';
+    product.gallery.forEach(function(image, index) {
+        galleryHtml += `
+            <div class="carousel-item ${index === 0 ? 'active' : ''}">
+                <img src="${image}" class="d-block w-100" alt="Product Image ${index + 1}">
+            </div>`;
     });
+    $('#modal-product-gallery').html(galleryHtml);
+
+    // Show or hide carousel controls based on the number of images
+    if (product.gallery.length > 1) {
+        $('.custom-carousel-control').show();
+    } else {
+        $('.custom-carousel-control').hide();
+    }
+
+    // Group attributes by their name and remove duplicates
+    var groupedAttributes = {};
+    product.attributes.forEach(function(attribute) {
+        if (!groupedAttributes[attribute.attribute]) {
+            groupedAttributes[attribute.attribute] = new Set(); // Use a Set to avoid duplicates
+        }
+        groupedAttributes[attribute.attribute].add(attribute.sub_attribute);
+    });
+
+    // Populate attributes table
+    var attributesHtml = '';
+    for (var key in groupedAttributes) {
+        if (groupedAttributes.hasOwnProperty(key)) {
+            attributesHtml += `
+                <tr>
+                    <td>${key}</td>
+                    <td>${Array.from(groupedAttributes[key]).join(', ')}</td>
+                </tr>`;
+        }
+    }
+
+    // Display the attributes section if there are any attributes
+    if (attributesHtml !== '') {
+        $('#modal-attributes-title').show(); // Show the title
+        $('#modal-product-attributes').html(attributesHtml);
+    } else {
+        $('#modal-attributes-title').hide(); // Hide the title if no attributes
+        $('#modal-product-attributes').html('');
+    }
+
+    // Show the modal
+    $('#quickViewModal').modal('show');
+});
+
 
 
 var $locationText = $("#customer_address");
+$('#get-location').on('click', function() {
+    // Show the modal
+    $('#mapModal').modal('show');
 
-// Check for geolocation browser support and execute success method on click
-$("#get-location").on("click", function () {
+    // Ask for the user's location
     if (navigator.geolocation) {
-        navigator.geolocation.getCurrentPosition(
-            geoLocationSuccess,
-            geoLocationError,
-            { timeout: 10000 }
-        );
+      navigator.geolocation.getCurrentPosition(function(position) {
+        var userLat = position.coords.latitude;
+        var userLng = position.coords.longitude;
+
+        // Move the marker to the user's current location
+        if (map && marker) {
+          var userLocation = [userLat, userLng];
+          marker.setLatLng(userLocation).update();
+          map.setView(userLocation, 10);
+          $("#Latitude").val(userLat);
+          $("#Longitude").val(userLng);
+        }
+      }, function(error) {
+        console.error("Geolocation failed: " + error.message);
+      });
     } else {
-        alert("Your browser doesn't support geolocation.");
+      console.error("Geolocation is not supported by this browser.");
     }
-});
+  });
+
+  // Initialize the map when the modal is shown
+  $('#mapModal').on('shown.bs.modal', function() {
+    // Set default location
+    var curLocation = [36.8121, 34.6415];
+
+    // If map is already initialized, just update the view
+    if (!map) {
+      map = L.map('MapLocation').setView(curLocation, 10);
+
+      L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png', {
+        attribution: '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
+      }).addTo(map);
+
+      map.attributionControl.setPrefix(false);
+
+      marker = L.marker(curLocation, {
+        draggable: true
+      }).addTo(map);
+
+      marker.on('dragend', function(event) {
+        var position = marker.getLatLng();
+        marker.setLatLng(position).bindPopup(position).update();
+        $("#Latitude").val(position.lat);
+        $("#Longitude").val(position.lng);
+      });
+
+      $("#Latitude, #Longitude").change(function() {
+        var position = [parseFloat($("#Latitude").val()), parseFloat($("#Longitude").val())];
+        marker.setLatLng(position).bindPopup(position).update();
+        map.panTo(position);
+      });
+    } else {
+      map.invalidateSize();  // Fix map display issues when modal is opened
+    }
+  });
+
+  // Handle "Save changes" button click
+  $('.get-location').on('click', function() {
+    var latitude = $("#Latitude").val();
+    var longitude = $("#Longitude").val();
+    
+    var apiUrl = `https://geocode.maps.co/reverse?lat=${latitude}&lon=${longitude}&api_key=66ca44568f5bc520184819feoed05ce`;
+    
+    $.ajax({
+      url: apiUrl,
+      type: 'GET',
+      success: function(response) {
+        $('#customer_address').val(response.display_name);
+        $('#mapModal').modal('hide'); // Close the modal on success
+      },
+      error: function(xhr, status, error) {
+        console.error('Error:', error);
+      }
+    });
+  });
+
 
 function geoLocationSuccess(pos) {
     // get user lat,long
@@ -443,10 +690,19 @@ $(document).on('click', '.product-info:not(.cart-item)', function() {
         cartItems.splice(existingProductIndex, 1);
         $(this).removeClass('active');
     } else {
+        // Extract price and sale price
+        let priceElement = $(this).find('.price2 p:first-child .price4');
+        let priceText = priceElement.text().trim();
+        let salePriceText = priceElement.next().text().trim();
+        
+        // Determine which price to use
+        let price = priceText;
+        let salePrice = salePriceText ? salePriceText : price;
+
         let product = {
             image: $(this).find('img').attr('src'),
             name: productName,
-            price: $(this).find('.price2 p:first-child').text(),
+            price: salePrice, // Store the sale price if it exists
             code: $(this).find('.cat-name a').text(),
             quantity: 1
         };
@@ -458,6 +714,7 @@ $(document).on('click', '.product-info:not(.cart-item)', function() {
     updateCartDisplay();
     updateCartCount();
 });
+
 
 // Handle delete from cart
 $(document).on('click', '.delete-icon', function() {
