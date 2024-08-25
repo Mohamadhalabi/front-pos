@@ -6,14 +6,17 @@
             <div class="row align-items-start pos-wrapper">
                 <div class="col-md-12 col-lg-8">
                 <div class="owl-carousel owl-tt owl-theme">
-                    @foreach($settings['data']['sliders'] as $slider)
-                    <div class="item">
-                    <a href="{{ $slider['link'] }}">
-                        <img src="{{ $slider['image'] }}" alt="Slider Image">
-                    </a>
+                        @if(isset($settings['data']['sliders']))
+                            @foreach($settings['data']['sliders'] as $slider)
+                                <div class="item">
+                                    <a href="{{ $slider['link'] }}">
+                                        <img src="{{ $slider['image'] }}" alt="Slider Image">
+                                    </a>
+                                </div>
+                            @endforeach
+                        @endif
                     </div>
-                    @endforeach
-                </div>
+
                     <div class="pos-categories tabs_wrapper {{ app()->getLocale() === 'ar' ? 'rtl' : '' }}">
 
 
