@@ -78,7 +78,7 @@
                                                         <div class="col-6 price2">
                                                         <p style="color:red;font-weight:bold;font-size:16px">
                                                             @if($product['sale_price'] !== null)
-                                                                <span class="price3" style="text-decoration: line-through; color: gray;">{{ $product['price'] }} TL</span>
+                                                                <span class="price3" style="text-decoration: line-through; color: gray;display:ruby">{{ $product['price'] }} TL</span>
                                                                 <span class="price4">{{ $product['sale_price'] }} TL </span>
                                                             @else
                                                                 <span class="price4">{{ $product['price'] }} TL</span>

@@ -766,7 +766,7 @@ $('.submit_order').on('click', function() {
     const phone = $('#user_phone').val();
     const address = $('#customer_address').val();
 
-    const userLanguage = navigator.language.startsWith('ar') ? 'ar' : 'en';
+    const userLanguage = "<?= app()->getLocale(); ?>";
     var userSession = @json(session('user'));
 
     const userId = userSession ? userSession.id : null;
