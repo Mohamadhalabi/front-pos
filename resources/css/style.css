@@ -29004,9 +29004,9 @@ th.fixed-width {
   -webkit-transition: all 0.5s ease;
   -ms-transition: all 0.5s ease;
   transition: all 0.5s ease;
-  min-width: 40px;
-  width: 40px;
-  height: 40px;
+  min-width: 100px;
+  width: 100px;
+  height: 100px;
   margin: 0 auto;
 }
 .pos-category .owl-item h6 {
@@ -29033,7 +29033,7 @@ th.fixed-width {
   color: #FF9F43;
 }
 .pos-category .owl-item:hover a img {
-  transform: scale(1.2);
+  /* transform: scale(1.2); */
 }
 .pos-category .owl-nav button.owl-next {
   margin-left: 5px;
