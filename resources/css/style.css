@@ -29004,9 +29004,8 @@ th.fixed-width {
   -webkit-transition: all 0.5s ease;
   -ms-transition: all 0.5s ease;
   transition: all 0.5s ease;
-  min-width: 100px;
-  width: 100px;
-  height: 100px;
+  width:100%;
+  height:100%;
   margin: 0 auto;
 }
 .pos-category .owl-item h6 {

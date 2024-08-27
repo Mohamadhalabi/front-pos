@@ -5,29 +5,14 @@
         <div class="content pos-design p-0">
             <div class="row align-items-start pos-wrapper">
                 <div class="col-md-12 col-lg-8">
-                <div class="owl-carousel owl-tt owl-theme">
-                        @if(isset($settings['data']['sliders']))
-                            @foreach($settings['data']['sliders'] as $slider)
-                                <div class="item">
-                                    <a href="{{ $slider['link'] }}">
-                                        <img src="{{ $slider['image'] }}" alt="Slider Image">
-                                    </a>
-                                </div>
-                            @endforeach
-                        @endif
-                    </div>
-
                     <div class="pos-categories tabs_wrapper {{ app()->getLocale() === 'ar' ? 'rtl' : '' }}">
-
-
-
+                        <!-- CATEGORIES REGION  -->
                         <h5>{{ __('messages.categories') }}</h5>
                         <p>{{ __('messages.select_from_categories') }}</p>
-
                         <!-- Categories Section -->
                         <ul class="tabs owl-carousel pos-category">
                         @if(app()->getlocale() !== 'ar')
-                            <li id="all" data-id="all" class="all-tab" style="cursor: pointer;">
+                            <li id="all" data-id="all" class="all-tab" style="cursor: pointer;padding-top:0">
                                 <a href="javascript:void(0);">
                                     <img src="{{ URL::asset('/build/img/categories/category-01.png') }}" alt="{{ __('messages.categories') }}">
                                 </a>
@@ -36,13 +21,13 @@
                             </li>
                         @endif
                             @foreach($categories as $category)
-                                <li id="category-{{$category['id']}}" data-id="{{$category['id']}}" class="category-item" style="cursor: pointer;">
-                                    <a href="{{ url()->current() }}?page=1&category={{ $category['id'] }}" class="category-link" onclick="event.stopPropagation();">
-                                        <img src="{{ $category['icon'] }}" alt="{{ __('messages.categories') }}" style="mix-blend-mode: multiply;">
+                                <li id="{{$category['id']}}" data-id="{{$category['id']}}" class="category-item" style="cursor: pointer;padding-top:0">
+                                    <a href="#" class="category-link" onclick="event.stopPropagation();">
+                                        <img src="{{ $category['icon'] }}" alt="{{ __('messages.categories') }}">
                                     </a>
-                                    <h6><a href="{{ url()->current() }}?page=1&category={{ $category['id'] }}" class="category-link" onclick="event.stopPropagation();">{{ $category['name'] }}</a></h6>
+                                    <h6><a href="#" class="category-link" onclick="event.stopPropagation();">{{ $category['name'] }}</a></h6>
                                     <span>
-                                        <a href="{{ url()->current() }}?page=1&category={{ $category['id'] }}" class="category-link" onclick="event.stopPropagation();">
+                                        <a href="#" class="category-link" onclick="event.stopPropagation();">
                                         {{$category['products_count']}} {{ __('messages.items') }}
                                         </a>
                                     </span>
@@ -59,12 +44,21 @@
                             @endif
                         </ul>
 
+
+                        <!-- SUB CATEGORIES REGION  -->
+                        <h5>Sub Categoires</h5>
+                        <p>Select From Below Sub Categories</p>
+                        <ul class="tabs owl-carousel pos-category pos-sub-category">
+
+                        </ul>
+
+
                         <!-- Products Section -->
                         <div class="pos-products">
                             <div>
                                 <div class="tab_content active mb-5" data-tab="all">
                                     <div class="row" id="product-list">
-                                        @foreach($products as $product)
+                                        <!-- @foreach($products as $product)
                                         <div class="col-sm-4 col-md-6 col-lg-4 col-xl-3 pe-2">
                                             <div class="product-info default-cover card mb-0">
                                                 <a href="javascript:void(0);" class="img-bg">
@@ -93,7 +87,7 @@
                                             </div>
                                             <button type="button" class="btn btn-secondary quick-view-button" data-product-id="{{ $product['id'] }}">{{ __('messages.quickview') }}</button>
                                         </div>
-                                        @endforeach
+                                        @endforeach -->
                                     </div>
                                 </div>
                             </div>
@@ -129,6 +123,19 @@
                 </div>
                 <div class="col-md-12 col-lg-4 ps-0">
                     <aside class="product-order-list">
+                    <div class="owl-carousel owl-tt owl-theme">
+                        @if(isset($settings['data']['sliders']))
+                            @foreach($settings['data']['sliders'] as $slider)
+                                <div class="item">
+                                    <a href="{{ $slider['link'] }}">
+                                        <img src="{{ $slider['image'] }}" alt="Slider Image">
+                                    </a>
+                                </div>
+                            @endforeach
+                        @endif
+                </div>
+
+
                         <!-- Customer Info Section -->
                         <div class="customer-info block-section {{ app()->getLocale() === 'ar' ? 'rtl' : '' }}">
                             <h6>{{ __('messages.customer_information') }}</h6>
@@ -247,7 +254,7 @@
                         <p id="modal-product-price" class="mt-3 mb-3" style="color:red;font-weight:bold;font-size:16px">TL</p>
 
                         <!-- Description -->
-                        <h5 id="modal-description-title" class="mt-3 mb-3">{{ __('messages.description') }}</h5>
+                        <h5 id="modal-description-title" class="mt-3 mb-3"></h5>
                         <p id="modal-product-description"></p>
 
                         <!-- Attribute Table -->

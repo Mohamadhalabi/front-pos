@@ -1,4 +1,10 @@
  <!-- jQuery -->
+
+ <script>
+    // Store the current locale in a JavaScript variable
+    var currentLocale = "{{ app()->getLocale() }}";
+</script>
+
  <script src="{{ URL::asset('/build/js/jquery-3.7.1.min.js') }}"></script>
 
  <!-- Feather Icon JS -->

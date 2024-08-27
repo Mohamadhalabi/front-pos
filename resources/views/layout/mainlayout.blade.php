@@ -347,7 +347,7 @@ $(document).ready(function() {
     // Populate modal with product data using translations
     $('#modal-product-name').text(product.name);
     $('#modal-product-sku').text(translations.sku + " " +  product.sku);
-    $('#modal-product-category').text(translations.category + " " + product.category);
+    // $('#modal-product-category').text(product.category);
 
     var priceText = product.price + ' ' + translations.turkishlira;
     var salePriceText = product.sale_price + ' ' + translations.turkishlira;
@@ -551,7 +551,7 @@ $('li.category-item').on('click', function() {
     var categoryId = $(this).data('id');
     
     if (categoryId) { // Only redirect if the li has a category id
-        window.location.href = "{{ url()->current() }}?page=1&category=" + categoryId;
+        // window.location.href = "{{ url()->current() }}?page=1&category=" + categoryId;
     }
 });
 
@@ -560,7 +560,7 @@ $('li.all-tab').on('click', function() {
     var allId = $(this).data('id');
     
     if (allId === 'all') { // Redirect only if the data-id is 'all'
-        window.location.href = "{{ url()->current() }}?page=1&category=" + allId;
+        // window.location.href = "{{ url()->current() }}?page=1&category=" + allId;
     }
 });
 
@@ -626,7 +626,7 @@ function updateCartDisplay() {
                     <div class="info">
                         <span class="text-center">${item.code}</span>
                         <h6><a href="javascript:void(0);">
-                            ${item.name.length > 20 ? item.name.substring(0, 20) + '...' : item.name}
+                            ${item.name}
                         </a></h6>
                         <p style="color:red;font-size:16px;font-weight:bold">${item.price}</p>
                     </div>
@@ -665,9 +665,9 @@ function updateCartDisplay() {
 
 // Function to highlight cart items on the product list
 function highlightCartItems() {
-    $('.product-info:not(.cart-item)').each(function() {  // Avoid highlighting cart items
-        let productName = $(this).find('.product-name a').text();
-        let productInCart = cartItems.some(item => item.name === productName);
+    $('.product-info:not(.cart-item)').each(function() { 
+        let productSku = $(this).find('.cat-name a').text();
+        let productInCart = cartItems.some(item => item.code === productSku);
         if (productInCart) {
             $(this).addClass('active');
         } else {
@@ -687,8 +687,8 @@ function updateCartCount() {
 
 // Handle product click on the product list only
 $(document).on('click', '.product-info:not(.cart-item)', function() {
-    let productName = $(this).find('.product-name a').text();
-    let existingProductIndex = cartItems.findIndex(item => item.name === productName);
+    let productSku = $(this).find('.cat-name a').text();
+    let existingProductIndex = cartItems.findIndex(item => item.code === productSku);
 
     if (existingProductIndex !== -1) {
         cartItems.splice(existingProductIndex, 1);
@@ -705,7 +705,7 @@ $(document).on('click', '.product-info:not(.cart-item)', function() {
 
         let product = {
             image: $(this).find('img').attr('src'),
-            name: productName,
+            name: $(this).find('.product-name a').text(),
             price: salePrice, // Store the sale price if it exists
             code: $(this).find('.cat-name a').text(),
             quantity: 1

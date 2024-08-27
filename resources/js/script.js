@@ -646,7 +646,6 @@ $(document).ready(function(){
 	        $input = $this.next('input'),
 	        $parent = $input.closest('div'),
 	        newValue = parseInt($input.val())-1;
-	    console.log($parent);
 	    $parent.find('.inc').addClass('a'+newValue);
 	    $input.val(newValue);
 	    newValue += newValue;
@@ -952,17 +951,281 @@ $(document).ready(function(){
 	}
 
 	
-	$('ul.tabs li').click(function(){
-		var $this = $(this);
-		var $theTab = $(this).attr('id');
-		if($this.hasClass('active')){
-		  // do nothing
-		} else{
-		  $this.closest('.tabs_wrapper').find('ul.tabs li, .tabs_container .tab_content').removeClass('active');
-		  $('.tabs_container .tab_content[data-tab="'+$theTab+'"], ul.tabs li[id="'+$theTab+'"]').addClass('active');
-		}
+	// $('ul.tabs li').click(function(){
+	// 	var $this = $(this);
+	// 	var $theTab = $(this).attr('id');
+	// 	if($this.hasClass('active')){
+	// 	  // do nothing
+	// 	} else{
+	// 	  $this.closest('.tabs_wrapper').find('ul.tabs li, .tabs_container .tab_content').removeClass('active');
+	// 	  $('.tabs_container .tab_content[data-tab="'+$theTab+'"], ul.tabs li[id="'+$theTab+'"]').addClass('active');
+	// 	}
 		
+	// });
+
+	$('ul.tabs li, ul.tabs li a, ul.tabs li h6, ul.tabs li span').click(function(e) {
+		var $this = $(this).closest('li'); // Get the closest 'li' element
+		var $theTab = $this.attr('id');
+	
+		$('#product-list').html('');
+	
+		if (!$this.hasClass('active')) {
+			$this.closest('.tabs_wrapper').find('ul.tabs li, .tabs_container .tab_content').removeClass('active');
+			$('.tabs_container .tab_content[data-tab="' + $theTab + '"], ul.tabs li[id="' + $theTab + '"]').addClass('active');
+	
+			const userLanguage = currentLocale;
+
+			$.ajax({
+				url: `${API_BASE_URL}/get-sub-categories`,
+				type: 'GET',
+				data: { sub_category: $theTab },
+				headers: {
+					'Accept-Language': userLanguage,
+					'Content-Type': 'application/json',
+					'Accept': 'application/json',
+					'secret-key': SECRET_KEY,
+					'api-key': API_KEY
+				},
+				success: function(response) {
+					const $categoryList = $('.pos-sub-category');
+	
+					// Destroy the existing Owl Carousel instance if it exists
+					if ($categoryList.hasClass('owl-loaded')) {
+						$categoryList.trigger('destroy.owl.carousel').removeClass('owl-loaded');
+						$categoryList.find('.owl-stage-outer').children().unwrap();
+					}
+	
+					$categoryList.empty(); // Clear existing categories
+	
+					// Append new category items
+					response.forEach(function(category) {
+						const categoryItem = `
+							<li id="${category.id}" data-id="${category.id}" class="category-item sub-category-item" style="cursor: pointer;padding-top:0">
+								<a href="#" class="category-link">
+									<img src="${category.icon}" alt="{{ __('messages.categories') }}">
+								</a>
+								<h6><a href="#" class="category-link">${category.name}</a></h6>
+								<span>
+									<a href="#" class="category-link">
+										${category.products_count}
+									</a>
+								</span>
+							</li>
+						`;
+						$categoryList.append(categoryItem);
+					});
+	
+					// Reinitialize the Owl Carousel
+					$categoryList.owlCarousel({
+						items: 15,
+						loop: false,
+						margin: 8,
+						nav: true,
+						dots: false,
+						autoplay: false,
+						smartSpeed: 1000,
+						navText: ['<i class="fas fa-chevron-left"></i>', '<i class="fas fa-chevron-right"></i>'],
+						responsive: {
+							0: { items: 2 },
+							500: { items: 4 },
+							768: { items: 6 },
+							991: { items: 6 },
+							1200: { items: 6 },
+							1401: { items: 8 }
+						}
+					});
+				},
+				error: function(xhr, status, error) {
+					console.error('Error:', error);
+				}
+			});
+		}
 	});
+	
+	// Handle click on sub-category items
+// Adjust the event listener to capture clicks on all nested <a> elements within .sub-category-item
+$('.pos-sub-category').on('click', '.sub-category-item a', function(event) {
+    event.preventDefault(); // Prevent the default action of the anchor
+    event.stopPropagation(); // Stop the event from propagating up to the parent <li>
+
+    const categoryId = $(this).closest('.sub-category-item').attr('id'); // Get the ID of the clicked item
+    const userLanguage = currentLocale;
+
+    // AJAX request to send the category ID
+    $.ajax({
+        url: `${API_BASE_URL}/products-by-category/${categoryId}`,
+        type: 'POST', // or 'GET' depending on your needs
+        data: { id: categoryId }, // Send the ID in the request
+        headers: {
+            'Accept-Language': userLanguage,
+            'Content-Type': 'application/json',
+            'Accept': 'application/json',
+            'secret-key': SECRET_KEY,
+            'api-key': API_KEY
+        },
+        success: function(response) {
+            // Clear the previous product list
+            $('#product-list').empty();
+
+            // Check if products are returned
+            if (response.products.length > 0) {
+                response.products.forEach(function(product) {
+                    // Create a product card HTML structure
+                    const productCard = `
+                        <div class="col-sm-4 col-md-6 col-lg-4 col-xl-3 pe-2">
+                            <div class="product-info default-cover card mb-0">
+                                <a href="javascript:void(0);" class="img-bg">
+                                    <img src="${product.image}" alt="Products" width="100" height="100" style="mix-blend-mode: multiply;">
+                                    <span><i data-feather="check" class="feather-16"></i></span>
+                                </a>
+                                <h6 class="cat-name text-center"><a class="product-category" href="javascript:void(0);">${product.sku}</a></h6>
+                                <h6 class="product-name mt-2 text-center"><a href="javascript:void(0);">${product.name}</a></h6>
+                                <div class="price">
+                                    <div class="row">
+                                        <div class="col-6 price2">
+                                            <p style="color:red;font-weight:bold;font-size:16px">
+                                                ${product.sale_price !== null ? 
+                                                    `<span class="price3" style="text-decoration: line-through; color: gray; display: ruby;">${product.price} TL</span>
+                                                     <span class="price4">${product.sale_price} TL</span>` : 
+                                                    `<span class="price4">${product.price} TL</span>`
+                                                }
+                                            </p>
+                                        </div>
+                                        <div class="col-6">
+                                            <p style="float: ${userLanguage === 'ar' ? 'left' : 'right'};">${product.category}</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <button type="button" class="btn btn-secondary quick-view-button" 
+                                data-product-id="${product.id}"
+                                data-product-name="${product.name}"
+                                data-product-sku="${product.sku}"
+                                data-product-price="${product.price}"
+                                data-product-sale-price="${product.sale_price}"
+                                data-product-category="${product.category}"
+                                data-product-description="${product.description}"
+                                data-product-gallery='${product.gallery}'
+                                data-product-attributes='${product.attributes}'>
+                                Quick View
+                            </button>
+                        </div>
+                    `;
+                    // Append the product card to the product list
+                    $('#product-list').append(productCard);
+                });
+            } else {
+                $('#product-list').append('<div class="col-12 text-center">No products found.</div>');
+            }
+
+            // Update pagination
+            updatePagination(response.pagination, categoryId);
+        },
+        error: function(xhr, status, error) {
+            console.error('Error sending category ID:', error);
+        }
+    });
+
+    // Remove 'active' class from all sub-category items and add it to the clicked one
+    $('.sub-category-item').removeClass('active'); // Remove active class from all items
+    $(this).closest('.sub-category-item').addClass('active'); // Add active class to the clicked item
+});
+
+	
+	// Prevent clicks on category links from bubbling up
+	$('.pos-sub-category').on('click', '.category-link', function(event) {
+		event.stopPropagation(); // Prevent click from propagating to parent li
+	});
+	
+
+    // Use event delegation for the quick-view-button
+	$(document).on('click', '.quick-view-button', function() {
+		var productName = $(this).data('product-name');
+		var productSku = $(this).data('product-sku');
+		var productPrice = $(this).data('product-price');
+		var productSalePrice = $(this).data('product-sale-price');
+		var productDescription = $(this).data('product-description');
+		var productGallery = $(this).data('product-gallery').split(','); // Convert string to array
+		var productAttributes = $(this).data('product-attributes');
+	
+		// Check if productAttributes is an array, and convert if necessary
+		if (!Array.isArray(productAttributes)) {
+			productAttributes = productAttributes ? [productAttributes] : []; // Convert to array or set to empty
+		}
+	
+		// Populate modal with product data
+		$('#modal-product-name').text(productName);
+		$('#modal-product-sku').text(translations.sku + " " + productSku);
+	
+		var priceText = productPrice + ' ' + translations.turkishlira;
+		var salePriceText = productSalePrice + ' ' + translations.turkishlira;
+	
+		if (productSalePrice != null && productSalePrice != 0) {
+			$('#modal-product-price').html(
+				'<span style="color:grey">' + translations.price + ' </span>' +
+				'<span style="color: gray; text-decoration: line-through;">' + priceText + '</span>' +
+				'<span style="color: red;"> ' + salePriceText + '</span>'
+			);
+		} else {
+			$('#modal-product-price').html(
+				'<span style="color: grey;">' + translations.price + '</span> <span style="color:red"> ' + priceText + '</span>'
+			);
+		}
+	
+		$('#modal-product-description').html(productDescription);
+	
+		console.log(productGallery);
+		// Populate carousel with gallery images
+		var galleryHtml = '';
+		productGallery.forEach(function(image, index) {
+			galleryHtml += `
+				<div class="carousel-item ${index === 0 ? 'active' : ''}">
+					<img src="${image}" class="d-block w-100" alt="Product Image ${index + 1}">
+				</div>`;
+		});
+		$('#modal-product-gallery').html(galleryHtml);
+	
+		if (productGallery.length > 1) {
+			$('.custom-carousel-control').show();
+		} else {
+			$('.custom-carousel-control').hide();
+		}
+	
+		// Group attributes by their name and remove duplicates
+		var groupedAttributes = {};
+		productAttributes.forEach(function(attribute) {
+			if (!groupedAttributes[attribute.attribute]) {
+				groupedAttributes[attribute.attribute] = new Set();
+			}
+			groupedAttributes[attribute.attribute].add(attribute.sub_attribute);
+		});
+	
+		var attributesHtml = '';
+		for (var key in groupedAttributes) {
+			if (groupedAttributes.hasOwnProperty(key)) {
+				attributesHtml += `
+					<tr>
+						<td>${key}</td>
+						<td>${Array.from(groupedAttributes[key]).join(', ')}</td>
+					</tr>`;
+			}
+		}
+	
+		if (attributesHtml !== '') {
+			$('#modal-attributes-title').show();
+			$('#modal-product-attributes').html(attributesHtml);
+		} else {
+			$('#modal-attributes-title').hide();
+			$('#modal-product-attributes').html('');
+		}
+	
+		$('#quickViewModal').modal('show');
+	});
+	
+	
+
+	
+
 
 	$('body').append('<div class="sidebar-filter"></div>');
 		//theme Settings 
@@ -1760,7 +2023,7 @@ function toggleFullscreen(elem) {
 
 
 $(document).ready(function(){
-	
+
 	if($('#collapse-header').length > 0) {
 		document.getElementById('collapse-header').onclick = function() {
 		    this.classList.toggle('active');
@@ -1782,7 +2045,7 @@ $(document).ready(function(){
 	// POS Category Slider
 	if($('.pos-category').length > 0) {      
 		$('.pos-category').owlCarousel({
-			items: 6,
+			items: 15,
 			loop:false,
 			margin:8,
 			nav:true,
@@ -1795,23 +2058,72 @@ $(document).ready(function(){
 					items:2
 				},
 				500:{
-					items:3
-				},
-				768:{
 					items:4
 				},
+				768:{
+					items:6
+				},
 				991:{
-					items:5
+					items:6
 				},
 				1200:{
 					items:6
 				},
 				1401:{
-					items:6
+					items:7
 				}
 			}
 		})
 	}
+
+	if($('.owl-tt').length > 0) {      
+		$('.owl-tt').owlCarousel({
+			items: 1,
+			loop:false,
+			margin:8,
+			nav:true,
+			dots: false,
+			autoplay:false,
+			smartSpeed: 1000,
+			navText: ['<i class="fas fa-chevron-left"></i>', '<i class="fas fa-chevron-right"></i>'],
+
+		})
+	}
+
+
+
+	// if($('.pos-sub-category').length > 0) {      
+	// 	$('.pos-sub-category').owlCarousel({
+	// 		items: 15,
+	// 		loop:false,
+	// 		margin:8,
+	// 		nav:true,
+	// 		dots: false,
+	// 		autoplay:false,
+	// 		smartSpeed: 1000,
+	// 		navText: ['<i class="fas fa-chevron-left"></i>', '<i class="fas fa-chevron-right"></i>'],
+	// 		responsive:{
+	// 			0:{
+	// 				items:2
+	// 			},
+	// 			500:{
+	// 				items:4
+	// 			},
+	// 			768:{
+	// 				items:6
+	// 			},
+	// 			991:{
+	// 				items:6
+	// 			},
+	// 			1200:{
+	// 				items:6
+	// 			},
+	// 			1401:{
+	// 				items:8
+	// 			}
+	// 		}
+	// 	})
+	// }
 
 	if($('.folders-carousel').length > 0) {
 		$('.folders-carousel').owlCarousel({
@@ -1953,7 +2265,6 @@ $(document).ready(function(){
 	setTimeout(function(){$('#upload-file').modal('hide')},4000);
 	setTimeout(function(){$('#upload-folder').modal('hide')},4000);
 	$(".upload-modal").on("hidden.bs.modal", function () {
-		// alert('modal closed');
 		$(".upload-message").modal('show');
 	  	setTimeout(function(){$('.upload-message').modal('hide')},3000);
 	});
@@ -1997,3 +2308,124 @@ $(document).ready(function(){
 
 
 
+function updatePagination(pagination,categoryId) {
+
+    const paginationLinks = $('#pagination-links');
+    paginationLinks.empty(); // Clear previous pagination
+
+    if (pagination.total > 0) {
+        const ul = $('<ul style="direction:ltr;" class="pagination justify-content-center"></ul>');
+
+        // Previous button
+        if (pagination.current_page > 1) {
+            ul.append(`
+                <li class="page-item">
+                    <a class="page-link" href="javascript:void(0);" aria-label="Previous" onclick="loadPage(${pagination.current_page - 1},${categoryId})">
+                        <span aria-hidden="true">&laquo;</span>
+                    </a>
+                </li>
+            `);
+        }
+
+        // Page number buttons
+        for (let i = 1; i <= pagination.last_page; i++) {
+            const pageItem = `
+                <li class="page-item ${i === pagination.current_page ? 'active' : ''}">
+                    <a class="page-link" href="javascript:void(0);" onclick="loadPage(${i},${categoryId})">${i}</a>
+                </li>
+            `;
+            ul.append(pageItem);
+        }
+
+        // Next button
+        if (pagination.current_page < pagination.last_page) {
+            ul.append(`
+                <li class="page-item">
+                    <a class="page-link" href="javascript:void(0);" aria-label="Next" onclick="loadPage(${pagination.current_page + 1},${categoryId})">
+                        <span aria-hidden="true">&raquo;</span>
+                    </a>
+                </li>
+            `);
+        }
+
+        paginationLinks.append(ul);
+    }
+}
+
+// Function to load a specific page
+function loadPage(page,categoryId) {
+	const userLanguage = currentLocale;
+    // Make an AJAX request to load products for the specific page
+    $.ajax({
+        url: `${API_BASE_URL}/products-by-category/${categoryId}?page=${page}`,
+        type: 'POST',
+        data: { id: categoryId },
+        headers: {
+            'Accept-Language': userLanguage,
+            'Content-Type': 'application/json',
+            'Accept': 'application/json',
+            'secret-key': SECRET_KEY,
+            'api-key': API_KEY
+        },
+        success: function(response) {
+            // Call the success function to handle the new products and pagination
+            $('#product-list').empty();
+            updateProductList(response.products);
+            updatePagination(response.pagination,categoryId);
+        },
+        error: function(xhr, status, error) {
+            console.error('Error loading page:', error);
+        }
+    });
+}
+
+// Function to update product list from response
+function updateProductList(products) {
+	const userLanguage = currentLocale;
+    products.forEach(function(product) {
+
+		alert(product.id);
+        const productCard = `
+            <div class="col-sm-4 col-md-6 col-lg-4 col-xl-3 pe-2">
+                <div class="product-info default-cover card mb-0">
+                    <a href="javascript:void(0);" class="img-bg">
+                        <img src="${product.image}" alt="Products" width="100" height="100" style="mix-blend-mode: multiply;">
+                        <span><i data-feather="check" class="feather-16"></i></span>
+                    </a>
+                    <h6 class="cat-name text-center"><a class="product-category" href="javascript:void(0);">${product.sku}</a></h6>
+                    <h6 class="product-name mt-2 text-center"><a href="javascript:void(0);">${product.name}</a></h6>
+                    <div class="price">
+                        <div class="row">
+                            <div class="col-6 price2">
+                                <p style="color:red;font-weight:bold;font-size:16px">
+                                    ${product.sale_price !== null ? 
+                                        `<span class="price3" style="text-decoration: line-through; color: gray; display: ruby;">${product.price} TL</span>
+                                         <span class="price4">${product.sale_price} TL</span>` : 
+                                        `<span class="price4">${product.price} TL</span>`
+                                    }
+                                </p>
+                            </div>
+                            <div class="col-6">
+                                <p style="float: ${userLanguage === 'ar' ? 'left' : 'right'};">${product.category}</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <button type="button" class="btn btn-secondary quick-view-button"
+				 data-product-id="${product.id}"
+                                data-product-name="${product.name}"
+                                data-product-sku="${product.sku}"
+                                data-product-price="${product.price}"
+                                data-product-sale-price="${product.sale_price}"
+                                data-product-category="${product.category}"
+                                data-product-description="${product.description}"
+                                data-product-gallery='${product.gallery}'
+                                data-product-attributes='${product.attributes}'
+				
+				
+				>Quick Viewee</button>
+            </div>
+        `;
+        $('#product-list').append(productCard);
+    });
+}

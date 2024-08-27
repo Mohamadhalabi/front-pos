@@ -53,10 +53,10 @@
 
                 </a>
                 <div class="dropdown-menu dropdown-menu-right">
-                <a href="{{ route('lang.switch', 'en') }}" class="dropdown-item {{ app()->getLocale() == 'en' ? 'active' : '' }}">
+                <a href="{{ route('lang.switch', 'en') }}" class="dropdown-item selected-lang {{ app()->getLocale() == 'en' ? 'active' : '' }}">
                     <img src="{{ URL::asset('/build/img/flags/us.png') }}" alt="" height="16"> English
                     </a>
-                    <a href="{{ route('lang.switch', 'ar') }}" class="dropdown-item {{ app()->getLocale() == 'ar' ? 'active' : '' }}">
+                    <a href="{{ route('lang.switch', 'ar') }}" class="dropdown-item selected-lang {{ app()->getLocale() == 'ar' ? 'active' : '' }}">
                         <img src="{{ URL::asset('/build/img/flags/sa.png') }}" alt="" height="16"> Arabic
                     </a>
 
