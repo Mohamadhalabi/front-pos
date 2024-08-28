@@ -12,7 +12,9 @@ return [
     'product_added' => 'Product Added',
     'clear_all' => 'Clear all',
     'total' => 'Total',
+    'sub_total' => 'Sub Total',
     'pay' => 'Pay',
+    'shipping' => 'Shipping',
     'sign_in' => 'Sign In',
     'email_address' => 'Email Address',
     'password' => 'Password',
@@ -46,6 +48,8 @@ return [
     'description' => 'Description',
     'Login' => 'Login',
     'Register' => 'Register',
+    'from' => 'From',
+    'to' => 'to',
 
     'modal' => [
         'map_modal' => [

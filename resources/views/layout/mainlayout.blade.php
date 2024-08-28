@@ -230,12 +230,23 @@
 
 <script>
     var translations = {
-        product_name: "{{ __('messages.product_name') }}",
         sku: "{{ __('messages.sku') }}",
         category: "{{ __('messages.category') }}",
         price: "{{ __('messages.price') }}",
-        turkishlira: "{{ __('messages.turkishlira') }}"
+        turkishlira: "{{ __('messages.turkishlira') }}",
+        quickview: "{{ __('messages.quickview') }}",
+        from: "{{ __('messages.from') }}",
+        to: "{{ __('messages.to') }}",
+        total : "{{ __('messages.total') }}",
+        sub_total: "{{ __('messages.sub_total') }}",
     };
+
+
+    var shipping_cost_per_meter = "<?php echo $settings['data']['shipping_cost']; ?>";
+    var vat_cost = "<?php echo $settings['data']['vat_cost']; ?>";
+    var longitude2 = "<?php echo $settings['data']['longitude']; ?>";
+    var latitude2 = "<?php echo $settings['data']['latitude']; ?>";
+
 </script>
 <script>
     const messages = @json(trans('validation'));
@@ -486,24 +497,51 @@ $('#get-location').on('click', function() {
   });
 
   // Handle "Save changes" button click
-  $('.get-location').on('click', function() {
-    var latitude = $("#Latitude").val();
-    var longitude = $("#Longitude").val();
-    
+// Haversine formula to calculate the distance in meters
+function getDistanceFromLatLonInMeters(lat1, lon1, lat2, lon2) {
+    var R = 6371000; // Radius of the earth in meters
+    var dLat = deg2rad(lat2 - lat1);  // deg2rad below
+    var dLon = deg2rad(lon2 - lon1); 
+    var a = 
+        Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+        Math.cos(deg2rad(lat1)) * Math.cos(deg2rad(lat2)) * 
+        Math.sin(dLon / 2) * Math.sin(dLon / 2)
+        ; 
+    var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a)); 
+    var distance = R * c; // Distance in meters
+    return distance;
+}
+
+function deg2rad(deg) {
+    return deg * (Math.PI / 180);
+}
+
+$('.get-location').on('click', function() {
+    var latitude = parseFloat($("#Latitude").val());
+    var longitude = parseFloat($("#Longitude").val());
+
     var apiUrl = `https://geocode.maps.co/reverse?lat=${latitude}&lon=${longitude}&api_key=66ca44568f5bc520184819feoed05ce`;
-    
+
     $.ajax({
       url: apiUrl,
       type: 'GET',
       success: function(response) {
         $('#customer_address').val(response.display_name);
         $('#mapModal').modal('hide'); // Close the modal on success
+
+        alert(latitude2);
+        alert(longitude2);
+        // Calculate the distance
+        var distance = getDistanceFromLatLonInMeters(latitude, longitude, latitude2, longitude2);
+        console.log('Distance in meters:', distance);
+        alert('Distance: ' + distance + ' meters'); // You can also show this in the UI
       },
       error: function(xhr, status, error) {
         console.error('Error:', error);
       }
     });
-  });
+});
+
 
 
 function geoLocationSuccess(pos) {
@@ -593,7 +631,6 @@ $('li[data-id]').each(function() {
 if (selectedCategory === 'all') {
     $('#all').addClass('active');
 }
-
 // Array to hold cart items
 let cartItems = [];
 
@@ -660,7 +697,7 @@ function updateCartDisplay() {
     highlightCartItems();
 
     // Update the total display
-    $('#total-price').text("Total: " + total.toFixed(2) + " TL"); // Display total with 2 decimal points
+    $('#sub-total-price').text(`${translations.sub_total} ${total.toFixed(2)} TL`); // Display total with 2 decimal points
 }
 
 // Function to highlight cart items on the product list
@@ -681,9 +718,9 @@ loadCart();
 updateCartCount();
 
 function updateCartCount() {
-        const itemCount = cartItems.length; // Get the current number of items in the cart
-        $('.count').text(itemCount); // Update the count display
-    }
+    const itemCount = cartItems.length; // Get the current number of items in the cart
+    $('.count').text(itemCount); // Update the count display
+}
 
 // Handle product click on the product list only
 $(document).on('click', '.product-info:not(.cart-item)', function() {
@@ -703,13 +740,19 @@ $(document).on('click', '.product-info:not(.cart-item)', function() {
         let price = priceText;
         let salePrice = salePriceText ? salePriceText : price;
 
+        // Get product attributes
+        let productattributes = $(this).find('.product-attributes a').text();
+
         let product = {
             image: $(this).find('img').attr('src'),
             name: $(this).find('.product-name a').text(),
             price: salePrice, // Store the sale price if it exists
-            code: $(this).find('.cat-name a').text(),
-            quantity: 1
+            originalPrice: salePrice, // Store the original price separately
+            code: productSku,
+            quantity: 1,
+            attributes: JSON.parse(productattributes) // Store the attributes as an array of objects
         };
+
         cartItems.push(product);
         $(this).addClass('active');
     }
@@ -718,7 +761,6 @@ $(document).on('click', '.product-info:not(.cart-item)', function() {
     updateCartDisplay();
     updateCartCount();
 });
-
 
 // Handle delete from cart
 $(document).on('click', '.delete-icon', function() {
@@ -733,6 +775,7 @@ $(document).on('click', '.delete-icon', function() {
 $(document).on('click', '.inc', function() {
     let index = $(this).closest('.product-list').find('.delete-icon').data('index');
     cartItems[index].quantity += 1;
+    updatePriceBasedOnQuantity(index); // Call function to update price
     saveCart();
     updateCartDisplay();
     updateCartCount();
@@ -742,6 +785,7 @@ $(document).on('click', '.dec', function() {
     let index = $(this).closest('.product-list').find('.delete-icon').data('index');
     if (cartItems[index].quantity > 1) {
         cartItems[index].quantity -= 1;
+        updatePriceBasedOnQuantity(index); // Call function to update price
     }
     saveCart();
     updateCartDisplay();
@@ -749,14 +793,29 @@ $(document).on('click', '.dec', function() {
 });
 
 $('a.text-danger').on('click', function() {
-        // Clear the cartItems array
-        cartItems = [];
-        saveCart(); // Save the empty cart to localStorage
-        updateCartDisplay(); // Update the display to reflect the empty cart
-        updateCartCount();
-    });
+    // Clear the cartItems array
+    cartItems = [];
+    saveCart(); // Save the empty cart to localStorage
+    updateCartDisplay(); // Update the display to reflect the empty cart
+    updateCartCount();
+});
 
+// Function to update price based on quantity
+function updatePriceBasedOnQuantity(index) {
+    let product = cartItems[index];
+    let quantity = product.quantity;
+    let basePrice = parseFloat(product.originalPrice.replace(/[^0-9.-]+/g, "")); // Use original price
 
+    // Find the matching price range
+    let matchingAttribute = product.attributes.find(attr => quantity >= attr.from && quantity <= attr.to);
+
+    // If a matching attribute is found, update the price
+    if (matchingAttribute) {
+        product.price = matchingAttribute.price + ' TL'; // Update the price based on the quantity
+    } else {
+        product.price = basePrice + ' TL'; // Revert to the original price if no matching attribute
+    }
+}
 
 // Handle payment button click
 $('.submit_order').on('click', function() {

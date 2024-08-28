@@ -3,7 +3,6 @@ Author       : Dreamguys
 Template Name: POS - Bootstrap Admin Template
 */
 
-
 $(document).ready(function(){
 
 	// Variables declarations
@@ -1064,6 +1063,9 @@ $('.pos-sub-category').on('click', '.sub-category-item a', function(event) {
             'api-key': API_KEY
         },
         success: function(response) {
+
+			console.log(translations);
+
             // Clear the previous product list
             $('#product-list').empty();
 
@@ -1094,6 +1096,9 @@ $('.pos-sub-category').on('click', '.sub-category-item a', function(event) {
                                         <div class="col-6">
                                             <p style="float: ${userLanguage === 'ar' ? 'left' : 'right'};">${product.category}</p>
                                         </div>
+										<div class="d-none">
+											<h6 class="product-attributes mt-2 text-center"><a href="javascript:void(0);">${JSON.stringify(product.attributes)}</a></h6>
+										</div>
                                     </div>
                                 </div>
                             </div>
@@ -1106,8 +1111,8 @@ $('.pos-sub-category').on('click', '.sub-category-item a', function(event) {
                                 data-product-category="${product.category}"
                                 data-product-description="${product.description}"
                                 data-product-gallery='${product.gallery}'
-                                data-product-attributes='${product.attributes}'>
-                                Quick View
+                                data-product-attributes='${JSON.stringify(product.attributes)}'>
+                                ${translations.quickview}
                             </button>
                         </div>
                     `;
@@ -1138,7 +1143,6 @@ $('.pos-sub-category').on('click', '.sub-category-item a', function(event) {
 	});
 	
 
-    // Use event delegation for the quick-view-button
 	$(document).on('click', '.quick-view-button', function() {
 		var productName = $(this).data('product-name');
 		var productSku = $(this).data('product-sku');
@@ -1147,19 +1151,19 @@ $('.pos-sub-category').on('click', '.sub-category-item a', function(event) {
 		var productDescription = $(this).data('product-description');
 		var productGallery = $(this).data('product-gallery').split(','); // Convert string to array
 		var productAttributes = $(this).data('product-attributes');
-	
-		// Check if productAttributes is an array, and convert if necessary
-		if (!Array.isArray(productAttributes)) {
-			productAttributes = productAttributes ? [productAttributes] : []; // Convert to array or set to empty
+		
+		// Parse productAttributes if it's a JSON string
+		if (typeof productAttributes === 'string') {
+			productAttributes = JSON.parse(productAttributes);
 		}
-	
+		
 		// Populate modal with product data
 		$('#modal-product-name').text(productName);
 		$('#modal-product-sku').text(translations.sku + " " + productSku);
-	
+		
 		var priceText = productPrice + ' ' + translations.turkishlira;
 		var salePriceText = productSalePrice + ' ' + translations.turkishlira;
-	
+		
 		if (productSalePrice != null && productSalePrice != 0) {
 			$('#modal-product-price').html(
 				'<span style="color:grey">' + translations.price + ' </span>' +
@@ -1171,10 +1175,8 @@ $('.pos-sub-category').on('click', '.sub-category-item a', function(event) {
 				'<span style="color: grey;">' + translations.price + '</span> <span style="color:red"> ' + priceText + '</span>'
 			);
 		}
-	
+		
 		$('#modal-product-description').html(productDescription);
-	
-		console.log(productGallery);
 		// Populate carousel with gallery images
 		var galleryHtml = '';
 		productGallery.forEach(function(image, index) {
@@ -1184,33 +1186,30 @@ $('.pos-sub-category').on('click', '.sub-category-item a', function(event) {
 				</div>`;
 		});
 		$('#modal-product-gallery').html(galleryHtml);
-	
+		
 		if (productGallery.length > 1) {
 			$('.custom-carousel-control').show();
 		} else {
 			$('.custom-carousel-control').hide();
 		}
-	
-		// Group attributes by their name and remove duplicates
-		var groupedAttributes = {};
+		
+		// Create table headers and populate attributes
+		var attributesHtml = `
+			<tr>
+				<th>${translations.from}</th>
+				<th>${translations.to}</th>
+				<th>${translations.price}</th>
+			</tr>`;
+		
 		productAttributes.forEach(function(attribute) {
-			if (!groupedAttributes[attribute.attribute]) {
-				groupedAttributes[attribute.attribute] = new Set();
-			}
-			groupedAttributes[attribute.attribute].add(attribute.sub_attribute);
+			attributesHtml += `
+				<tr>
+					<td>${attribute.from} ${attribute.unit}</td>
+					<td>${attribute.to} ${attribute.unit}</td>
+					<td>${attribute.price} ${translations.turkishlira}</td>
+				</tr>`;
 		});
-	
-		var attributesHtml = '';
-		for (var key in groupedAttributes) {
-			if (groupedAttributes.hasOwnProperty(key)) {
-				attributesHtml += `
-					<tr>
-						<td>${key}</td>
-						<td>${Array.from(groupedAttributes[key]).join(', ')}</td>
-					</tr>`;
-			}
-		}
-	
+		
 		if (attributesHtml !== '') {
 			$('#modal-attributes-title').show();
 			$('#modal-product-attributes').html(attributesHtml);
@@ -1218,9 +1217,11 @@ $('.pos-sub-category').on('click', '.sub-category-item a', function(event) {
 			$('#modal-attributes-title').hide();
 			$('#modal-product-attributes').html('');
 		}
-	
+		
 		$('#quickViewModal').modal('show');
 	});
+	
+	
 	
 	
 
@@ -2085,7 +2086,7 @@ $(document).ready(function(){
 			dots: false,
 			autoplay:false,
 			smartSpeed: 1000,
-			navText: ['<i class="fas fa-chevron-left"></i>', '<i class="fas fa-chevron-right"></i>'],
+			navText: [$('.am-next'),$('.am-prev')]
 
 		})
 	}
@@ -2313,7 +2314,7 @@ function updatePagination(pagination,categoryId) {
     const paginationLinks = $('#pagination-links');
     paginationLinks.empty(); // Clear previous pagination
 
-    if (pagination.total > 0) {
+    if (pagination.total > 1) {
         const ul = $('<ul style="direction:ltr;" class="pagination justify-content-center"></ul>');
 
         // Previous button
@@ -2411,6 +2412,9 @@ function updateProductList(products) {
                         </div>
                     </div>
                 </div>
+				<div class="d-none">
+				<h6 class="product-attributes mt-2 text-center"><a href="javascript:void(0);">${JSON.stringify(product.attributes)}</a></h6>
+				</div>
                 <button type="button" class="btn btn-secondary quick-view-button"
 				 data-product-id="${product.id}"
                                 data-product-name="${product.name}"
@@ -2420,10 +2424,10 @@ function updateProductList(products) {
                                 data-product-category="${product.category}"
                                 data-product-description="${product.description}"
                                 data-product-gallery='${product.gallery}'
-                                data-product-attributes='${product.attributes}'
+                                data-product-attributes='${JSON.stringify(product.attributes)}'
 				
 				
-				>Quick Viewee</button>
+				>${translations.quickview}</button>
             </div>
         `;
         $('#product-list').append(productCard);

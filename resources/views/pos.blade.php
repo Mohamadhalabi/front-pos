@@ -133,7 +133,11 @@
                                 </div>
                             @endforeach
                         @endif
-                </div>
+                    </div>
+                    <div class="slider_nav">
+                        <button class="am-next">Next</button>
+                        <button class="am-prev">Previous</button>
+                    </div>
 
 
                         <!-- Customer Info Section -->
@@ -180,7 +184,7 @@
                                             <div class="input-blocks">
                                                 <label>{{ __('messages.address') }}</label>
                                                 <div class="d-flex align-items-center">
-                                                    <input type="text" id="customer_address" class="form-control">
+                                                    <input readonly type="text" id="customer_address" class="form-control">
                                                     <i id="get-location" class="fas fa-map-marker-alt" style="cursor: pointer; margin-left: 8px; margin-right: 8px"></i>
                                                 </div>
                                             </div>
@@ -205,7 +209,19 @@
                         </div>
 
                         <!-- Payment and Total Section -->
-                        <div class="d-grid btn-block">
+                        <div class="d-grid btn-block m-0">
+                            <a class="btn btn-warning" href="javascript:void(0);" id="sub-total-price">
+                                {{ __('messages.sub_total') }}: 0.00
+                            </a>
+                        </div>
+
+                        <div class="d-grid btn-block m-0">
+                            <a class="btn btn-primary" href="javascript:void(0);" id="shipping-price">
+                                {{ __('messages.shipping') }}: 0.00
+                            </a>
+                        </div>
+
+                        <div class="d-grid btn-block m-0">
                             <a class="btn btn-secondary" href="javascript:void(0);" id="total-price">
                                 {{ __('messages.total') }}: 0.00
                             </a>

@@ -12,7 +12,9 @@ return [
     'product_added' => 'المنتجات المضافة',
     'clear_all' => 'مسح الكل',
     'total' => 'الإجمالي',
+    'sub_total' => 'المجموع الفرعي',
     'pay' => 'الدفع',
+    'shipping' => 'الشحن',
     'sign_in' => 'تسجيل الدخول',
     'email_address' => 'عنوان البريد الإلكتروني',
     'password' => 'كلمة المرور',
@@ -46,7 +48,9 @@ return [
     'description' => 'توصيف المنتج',
     'Login' => 'تسجيل الدخول',
     'Register' => 'إنشاء حساب',
-
+    'from' => 'من',
+    'to' => 'إلى',
+    
     'modal' => [
         'map_modal' => [
             'title' => 'اختر الموقع',
