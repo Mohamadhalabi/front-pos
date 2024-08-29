@@ -278,7 +278,7 @@ $(document).ready(function() {
 
 
         $('#search').on('input', function() {
-            const userLanguage = navigator.language.startsWith('ar') ? 'ar' : 'en';
+			const userLanguage = currentLocale;
             var query = $(this).val();
 
             if (query.length >= 3) {
@@ -498,8 +498,8 @@ $('#get-location').on('click', function() {
 
   // Handle "Save changes" button click
 // Haversine formula to calculate the distance in meters
-function getDistanceFromLatLonInMeters(lat1, lon1, lat2, lon2) {
-    var R = 6371000; // Radius of the earth in meters
+function getDistanceFromLatLonInKm(lat1, lon1, lat2, lon2) {
+    var R = 6371; // Radius of the earth in kilometers
     var dLat = deg2rad(lat2 - lat1);  // deg2rad below
     var dLon = deg2rad(lon2 - lon1); 
     var a = 
@@ -508,13 +508,14 @@ function getDistanceFromLatLonInMeters(lat1, lon1, lat2, lon2) {
         Math.sin(dLon / 2) * Math.sin(dLon / 2)
         ; 
     var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a)); 
-    var distance = R * c; // Distance in meters
+    var distance = R * c; // Distance in kilometers
     return distance;
 }
 
 function deg2rad(deg) {
     return deg * (Math.PI / 180);
 }
+
 
 $('.get-location').on('click', function() {
     var latitude = parseFloat($("#Latitude").val());
@@ -529,12 +530,10 @@ $('.get-location').on('click', function() {
         $('#customer_address').val(response.display_name);
         $('#mapModal').modal('hide'); // Close the modal on success
 
-        alert(latitude2);
-        alert(longitude2);
-        // Calculate the distance
-        var distance = getDistanceFromLatLonInMeters(latitude, longitude, latitude2, longitude2);
-        console.log('Distance in meters:', distance);
-        alert('Distance: ' + distance + ' meters'); // You can also show this in the UI
+        var distance = getDistanceFromLatLonInKm(latitude, longitude, latitude2, longitude2);
+
+        var shippingCost = distance * shipping_cost_per_meter;
+        $("#shipping-cost").text(shippingCost.toFixed(2));
       },
       error: function(xhr, status, error) {
         console.error('Error:', error);
@@ -724,6 +723,7 @@ function updateCartCount() {
 
 // Handle product click on the product list only
 $(document).on('click', '.product-info:not(.cart-item)', function() {
+    const userLanguage = currentLocale;
     let productSku = $(this).find('.cat-name a').text();
     let existingProductIndex = cartItems.findIndex(item => item.code === productSku);
 
@@ -743,6 +743,8 @@ $(document).on('click', '.product-info:not(.cart-item)', function() {
         // Get product attributes
         let productattributes = $(this).find('.product-attributes a').text();
 
+        let productStock = parseInt($(this).find('.product-stock a').text());
+
         let product = {
             image: $(this).find('img').attr('src'),
             name: $(this).find('.product-name a').text(),
@@ -753,14 +755,98 @@ $(document).on('click', '.product-info:not(.cart-item)', function() {
             attributes: JSON.parse(productattributes) // Store the attributes as an array of objects
         };
 
-        cartItems.push(product);
-        $(this).addClass('active');
+        if (productStock < 1) {
+            var userSession = @json(session('user'));
+            const userId = userSession ? userSession.id : null;
+            if (userId == null) {
+                // Display a modal asking for the user's email
+                $('#emailModal').modal('show');
+                
+                // Handle form submission inside the modal
+                $('#emailForm').on('submit', function(e) {
+                    e.preventDefault();
+                    let email = $('#emailInput').val();
+
+                    alert(productSku);
+
+                    // Send AJAX request with product SKU and user email to the backend
+                    $.ajax({
+                            url: `${API_BASE_URL}/notify-me`,
+                            method: 'GET',
+                            data: {
+                                sku: productSku,
+                                email: email
+                            },
+                            headers: {
+                                'Accept-Language': userLanguage,
+                                'Content-Type': 'application/json',
+                                'Accept': 'application/json',
+                                'secret-key': SECRET_KEY,
+                                'api-key': API_KEY
+                            },
+                            success: function(response) {
+                                if (response.data.success) {
+                                    Swal.fire({
+                                        title: userLanguage === 'ar' ? 'المنتج غير متوفر حاليا!' : 'The product is currently not available',
+                                        text: userLanguage === 'ar' ? 'سنخبرك عندما يكون المنتج متاحًا مرة أخرى.' : 'We will inform you when the product is available again.',
+                                        icon: 'success',
+                                        confirmButtonText: userLanguage === 'ar' ? 'حسناً' : 'OK'
+                                    });
+                                    $('#emailModal').modal('hide');
+
+                                }
+                            },
+                            error: function(xhr) {
+                                Swal.fire({
+                                    title: userLanguage === 'ar' ? 'خطأ!' : 'Error!',
+                                    text: xhr.responseJSON.message,
+                                    icon: 'error',
+                                    confirmButtonText: userLanguage === 'ar' ? 'حسناً' : 'OK'
+                                });
+                            }
+                        });
+                });
+            } else {
+                let email = userSession.email;
+
+                // Send AJAX request with product SKU and logged-in user email to the backend
+                $.ajax({
+                    url: `${API_BASE_URL}/notify-me`, // Use the API_BASE_URL and endpoint for creating an order
+                    method: 'GET',
+                    data: {
+                        sku: productSku,
+                        email: email
+                    },
+                    headers: {
+                        'Accept-Language': userLanguage, // Set the language header based on user preference
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json',
+                        'secret-key': SECRET_KEY, // Use the secret key from the environment
+                        'api-key': API_KEY // Use the API key from the environment
+                    },
+                    success: function(response) {
+                        if (response.data.success) {
+                                    Swal.fire({
+                                        title: userLanguage === 'ar' ? 'المنتج غير متوفر حاليا!' : 'The product is currently not available',
+                                        text: userLanguage === 'ar' ? 'سنخبرك عندما يكون المنتج متاحًا مرة أخرى.' : 'We will inform you when the product is available again.',
+                                        icon: 'success',
+                                        confirmButtonText: userLanguage === 'ar' ? 'حسناً' : 'OK'
+                                    });
+                            }
+                    }
+                });
+            }
+        } else {
+            cartItems.push(product);
+            $(this).addClass('active');
+        }
     }
 
     saveCart();
     updateCartDisplay();
     updateCartCount();
 });
+
 
 // Handle delete from cart
 $(document).on('click', '.delete-icon', function() {
@@ -825,7 +911,7 @@ $('.submit_order').on('click', function() {
     const phone = $('#user_phone').val();
     const address = $('#customer_address').val();
 
-    const userLanguage = "<?= app()->getLocale(); ?>";
+    const userLanguage = currentLocale;
     var userSession = @json(session('user'));
 
     const userId = userSession ? userSession.id : null;

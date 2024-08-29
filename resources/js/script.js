@@ -1098,6 +1098,7 @@ $('.pos-sub-category').on('click', '.sub-category-item a', function(event) {
                                         </div>
 										<div class="d-none">
 											<h6 class="product-attributes mt-2 text-center"><a href="javascript:void(0);">${JSON.stringify(product.attributes)}</a></h6>
+											<h6 class="product-stock mt-2 text-center"><a href="javascript:void(0);">${product.quantity}</a></h6>
 										</div>
                                     </div>
                                 </div>
@@ -2414,6 +2415,7 @@ function updateProductList(products) {
                 </div>
 				<div class="d-none">
 				<h6 class="product-attributes mt-2 text-center"><a href="javascript:void(0);">${JSON.stringify(product.attributes)}</a></h6>
+				<h6 class="product-stock mt-2 text-center"><a href="javascript:void(0);">${product.quantity}</a></h6>
 				</div>
                 <button type="button" class="btn btn-secondary quick-view-button"
 				 data-product-id="${product.id}"

@@ -50,6 +50,9 @@ return [
     'Register' => 'Register',
     'from' => 'From',
     'to' => 'to',
+    'notify_me' => 'Notify Me When Available',
+    'enter_email' => 'Enter your email address',
+    'submit' => 'Submit',
 
     'modal' => [
         'map_modal' => [

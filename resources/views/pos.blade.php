@@ -217,9 +217,10 @@
 
                         <div class="d-grid btn-block m-0">
                             <a class="btn btn-primary" href="javascript:void(0);" id="shipping-price">
-                                {{ __('messages.shipping') }}: 0.00
+                                {{ __('messages.shipping') }}: <span id="shipping-cost">0.00</span>
                             </a>
                         </div>
+
 
                         <div class="d-grid btn-block m-0">
                             <a class="btn btn-secondary" href="javascript:void(0);" id="total-price">
@@ -308,6 +309,33 @@
     </div>
   </div>
 </div>
+
+
+<!-- Modal out of stock logged in -->
+<!-- Email Modal -->
+<div class="modal fade" id="emailModal" tabindex="-1" role="dialog" aria-labelledby="emailModalLabel" aria-hidden="true" @if(app()->getLocale() == 'ar') style="direction: rtl;" @endif>
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header" style="justify-content:space-between">
+                <h5 class="modal-title" id="emailModalLabel">{{ __('messages.notify_me') }}</h5>
+                <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form id="emailForm">
+                    <div class="form-group">
+                        <label for="emailInput">{{ __('messages.enter_email') }}</label>
+                        <input type="email" class="form-control" id="emailInput" required>
+                    </div>
+                    <br>
+                    <button type="submit" class="btn btn-primary">{{ __('messages.submit') }}</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
 
 
 
