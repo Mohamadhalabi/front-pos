@@ -11,15 +11,6 @@
                         <p>{{ __('messages.select_from_categories') }}</p>
                         <!-- Categories Section -->
                         <ul class="tabs owl-carousel pos-category">
-                        @if(app()->getlocale() !== 'ar')
-                            <li id="all" data-id="all" class="all-tab" style="cursor: pointer;padding-top:0">
-                                <a href="javascript:void(0);">
-                                    <img src="{{ URL::asset('/build/img/categories/category-01.png') }}" alt="{{ __('messages.categories') }}">
-                                </a>
-                                <h6><a href="javascript:void(0);">{{ __('messages.all_categories') }}</a></h6>
-                                <span>{{$settings['data']['products_count']}} {{ __('messages.items') }}</span>
-                            </li>
-                        @endif
                             @foreach($categories as $category)
                                 <li id="{{$category['id']}}" data-id="{{$category['id']}}" class="category-item" style="cursor: pointer;padding-top:0">
                                     <a href="#" class="category-link" onclick="event.stopPropagation();">
@@ -33,21 +24,12 @@
                                     </span>
                                 </li>
                             @endforeach
-                            @if(app()->getlocale() == 'ar')
-                            <li id="all" data-id="all" class="all-tab" style="cursor: pointer;">
-                                <a href="javascript:void(0);">
-                                    <img src="{{ URL::asset('/build/img/categories/category-01.png') }}" alt="{{ __('messages.categories') }}">
-                                </a>
-                                <h6><a href="javascript:void(0);">{{ __('messages.all_categories') }}</a></h6>
-                                <span>{{$pagination['total']}} {{ __('messages.items') }}</span>
-                            </li>
-                            @endif
                         </ul>
 
 
                         <!-- SUB CATEGORIES REGION  -->
-                        <h5>Sub Categoires</h5>
-                        <p>Select From Below Sub Categories</p>
+                        <h5>{{ __('messages.sub_categories') }}</h5>
+                        <p>{{ __('messages.select_from_sub_categories') }}</p>
                         <ul class="tabs owl-carousel pos-category pos-sub-category">
 
                         </ul>
@@ -93,7 +75,7 @@
                             </div>
 
                             <!-- Pagination -->
-                             @if($pagination['total'] > 0)
+                             @if($pagination['total'] > 1)
                             <nav aria-label="Page navigation example" id="pagination-links">
                                 <ul class="pagination justify-content-center">
                                     @if($pagination['current_page'] > 1)
@@ -208,23 +190,42 @@
                             </div>
                         </div>
 
+                        <div class="row">
+                        <div class="col-lg-10 col-sm-10 col-10">
+                            <div class="input-blocks">
+                                <label>{{ __('messages.coupon') }}</label>
+                                <input type="text" name="coupon" id="coupon" class="form-control">
+                            </div>
+                        </div>
+                        <div class="col-lg-2 col-sm-2 col-2 m-auto">
+                            <button type="submit" class="btn btn-primary"  id="apply-coupon">{{ __('messages.apply') }}</button>
+                        </div>
+                        </div>
+
                         <!-- Payment and Total Section -->
-                        <div class="d-grid btn-block m-0">
+                        <div class="d-grid btn-block m-0 {{ app()->getLocale() === 'ar' ? 'rtl' : '' }}">
                             <a class="btn btn-warning" href="javascript:void(0);" id="sub-total-price">
                                 {{ __('messages.sub_total') }}: 0.00
                             </a>
                         </div>
 
-                        <div class="d-grid btn-block m-0">
+                        <div class="d-grid btn-block m-0 {{ app()->getLocale() === 'ar' ? 'rtl' : '' }}">
                             <a class="btn btn-primary" href="javascript:void(0);" id="shipping-price">
-                                {{ __('messages.shipping') }}: <span id="shipping-cost">0.00</span>
+                                {{ __('messages.shipping') }}: <span id="shipping-cost">0.00</span> TL
+                            </a>
+                        </div>
+
+                        <div class="d-grid btn-block m-0 {{ app()->getLocale() === 'ar' ? 'rtl' : '' }}">
+                            <a class="btn btn-dark" href="javascript:void(0);" id="vat-price">
+                                VAT: <span id="vat-cost">0.00</span> TL
                             </a>
                         </div>
 
 
-                        <div class="d-grid btn-block m-0">
+
+                        <div class="d-grid btn-block m-0 {{ app()->getLocale() === 'ar' ? 'rtl' : '' }}"">
                             <a class="btn btn-secondary" href="javascript:void(0);" id="total-price">
-                                {{ __('messages.total') }}: 0.00
+                                {{ __('messages.total') }}: 0.00 
                             </a>
                         </div>
 
@@ -289,9 +290,6 @@
 
 </div>
 
-
-<input type="hidden" id="Latitude" value="36.8121">
-<input type="hidden" id="Longitude" value="34.6415">
 
 <div class="modal fade" id="mapModal" tabindex="-1" aria-labelledby="mapModalLabel" aria-hidden="true">
   <div class="modal-dialog modal-lg modal-dialog-centered {{ app()->getLocale() === 'ar' ? 'rtl' : '' }}">

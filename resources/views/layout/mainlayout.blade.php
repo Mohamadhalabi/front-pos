@@ -257,6 +257,13 @@
     const SECRET_KEY = '{{ env('SECRET_KEY', 'default_value') }}'; // Set the secret key
     const API_KEY = '{{ env('API_KEY', 'default_value') }}'; // Set the API key
 $(document).ready(function() {
+
+    $('#vat-cost').text(vat_cost); // Replace '100.00' with the desired value
+
+
+    let long = 0;
+    let lat = 0;
+
     $('.owl-tt').owlCarousel({
     loop: true,
     margin: 10,
@@ -440,63 +447,67 @@ $('#get-location').on('click', function() {
 
     // Ask for the user's location
     if (navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition(function(position) {
-        var userLat = position.coords.latitude;
-        var userLng = position.coords.longitude;
+        navigator.geolocation.getCurrentPosition(function(position) {
+            var userLat = position.coords.latitude;
+            var userLng = position.coords.longitude;
 
-        // Move the marker to the user's current location
-        if (map && marker) {
-          var userLocation = [userLat, userLng];
-          marker.setLatLng(userLocation).update();
-          map.setView(userLocation, 10);
-          $("#Latitude").val(userLat);
-          $("#Longitude").val(userLng);
-        }
-      }, function(error) {
-        console.error("Geolocation failed: " + error.message);
-      });
+            // Move the marker to the user's current location
+            if (map && marker) {
+                var userLocation = [userLat, userLng];
+                marker.setLatLng(userLocation).update();
+                map.setView(userLocation, 10);
+                $("#Latitude").val(userLat);
+                $("#Longitude").val(userLng);
+            }
+        }, function(error) {
+            console.error("Geolocation failed: " + error.message);
+        });
     } else {
-      console.error("Geolocation is not supported by this browser.");
+        console.error("Geolocation is not supported by this browser.");
     }
-  });
+});
 
-  // Initialize the map when the modal is shown
-  $('#mapModal').on('shown.bs.modal', function() {
+// Initialize the map when the modal is shown
+$('#mapModal').on('shown.bs.modal', function() {
     // Set default location
-    var curLocation = [36.8121, 34.6415];
+    var curLocation = [latitude2, longitude2];
 
     // If map is already initialized, just update the view
     if (!map) {
-      map = L.map('MapLocation').setView(curLocation, 10);
+        map = L.map('MapLocation').setView(curLocation, 10);
 
-      L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png', {
-        attribution: '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
-      }).addTo(map);
+        L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png', {
+            attribution: '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
+        }).addTo(map);
 
-      map.attributionControl.setPrefix(false);
+        map.attributionControl.setPrefix(false);
 
-      marker = L.marker(curLocation, {
-        draggable: true
-      }).addTo(map);
+        marker = L.marker(curLocation, {
+            draggable: true
+        }).addTo(map);
 
-      marker.on('dragend', function(event) {
-        var position = marker.getLatLng();
-        marker.setLatLng(position).bindPopup(position).update();
-        $("#Latitude").val(position.lat);
-        $("#Longitude").val(position.lng);
-      });
+        marker.on('dragend', function(event) {
+            var position = marker.getLatLng();
+            marker.setLatLng(position).bindPopup(position).update();
 
-      $("#Latitude, #Longitude").change(function() {
-        var position = [parseFloat($("#Latitude").val()), parseFloat($("#Longitude").val())];
-        marker.setLatLng(position).bindPopup(position).update();
-        map.panTo(position);
-      });
+            // Update lat and long variables
+            lat = position.lat;
+            long = position.lng;
+
+            $("#Latitude").val(lat);
+            $("#Longitude").val(long);
+        });
+
+        $("#Latitude, #Longitude").change(function() {
+            var position = [parseFloat($("#Latitude").val()), parseFloat($("#Longitude").val())];
+            marker.setLatLng(position).bindPopup(position).update();
+            map.panTo(position);
+        });
     } else {
-      map.invalidateSize();  // Fix map display issues when modal is opened
+        map.invalidateSize(); // Fix map display issues when modal is opened
     }
-  });
+});
 
-  // Handle "Save changes" button click
 // Haversine formula to calculate the distance in meters
 function getDistanceFromLatLonInKm(lat1, lon1, lat2, lon2) {
     var R = 6371; // Radius of the earth in kilometers
@@ -505,8 +516,7 @@ function getDistanceFromLatLonInKm(lat1, lon1, lat2, lon2) {
     var a = 
         Math.sin(dLat / 2) * Math.sin(dLat / 2) +
         Math.cos(deg2rad(lat1)) * Math.cos(deg2rad(lat2)) * 
-        Math.sin(dLon / 2) * Math.sin(dLon / 2)
-        ; 
+        Math.sin(dLon / 2) * Math.sin(dLon / 2); 
     var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a)); 
     var distance = R * c; // Distance in kilometers
     return distance;
@@ -516,72 +526,32 @@ function deg2rad(deg) {
     return deg * (Math.PI / 180);
 }
 
-
+// Handle "Save changes" button click
 $('.get-location').on('click', function() {
-    var latitude = parseFloat($("#Latitude").val());
-    var longitude = parseFloat($("#Longitude").val());
+    // Alert the updated latitude and longitude
+    var latitude = lat; // Use the updated variable
+    var longitude = long; // Use the updated variable
 
     var apiUrl = `https://geocode.maps.co/reverse?lat=${latitude}&lon=${longitude}&api_key=66ca44568f5bc520184819feoed05ce`;
 
     $.ajax({
-      url: apiUrl,
-      type: 'GET',
-      success: function(response) {
-        $('#customer_address').val(response.display_name);
-        $('#mapModal').modal('hide'); // Close the modal on success
+        url: apiUrl,
+        type: 'GET',
+        success: function(response) {
+            $('#customer_address').val(response.display_name);
+            $('#mapModal').modal('hide'); // Close the modal on success
 
-        var distance = getDistanceFromLatLonInKm(latitude, longitude, latitude2, longitude2);
-
-        var shippingCost = distance * shipping_cost_per_meter;
-        $("#shipping-cost").text(shippingCost.toFixed(2));
-      },
-      error: function(xhr, status, error) {
-        console.error('Error:', error);
-      }
+            var distance = getDistanceFromLatLonInKm(latitude2, longitude2, latitude, longitude);
+            var shippingCost = distance * shipping_cost_per_meter;
+            $("#shipping-cost").text(shippingCost.toFixed(2));
+            calculateTotal();
+        },
+        error: function(xhr, status, error) {
+            console.error('Error:', error);
+        }
     });
 });
 
-
-
-function geoLocationSuccess(pos) {
-    // get user lat,long
-    var myLat = pos.coords.latitude,
-        myLng = pos.coords.longitude,
-        loadingTimeout;
-
-    var loading = function () {
-        $locationText.val("Fetching...");
-    };
-
-    loadingTimeout = setTimeout(loading, 600);
-
-    var request = $.get(
-        "https://nominatim.openstreetmap.org/reverse?format=json&lat=" +
-        myLat +
-        "&lon=" +
-        myLng
-    )
-        .done(function (data) {
-            if (loadingTimeout) {
-                clearTimeout(loadingTimeout);
-                loadingTimeout = null;
-                $locationText.val(data.display_name);
-            }
-        })
-        .fail(function () {
-            // handle error
-            $locationText.val("Unable to fetch location.");
-        });
-}
-
-function geoLocationError(error) {
-    var errors = {
-        1: "Permission denied",
-        2: "Position unavailable",
-        3: "Request timeout"
-    };
-    alert("Error: " + errors[error.code]);
-}
 
 //specifc cateogry
 $('li.category-item').on('click', function() {
@@ -712,9 +682,35 @@ function highlightCartItems() {
     });
 }
 
+function calculateTotal() {
+    // Get the text from the #sub-total-price element
+    var subTotalText = $('#sub-total-price').text();
+
+    // Extract the numerical part (assuming the format is like "Subtotal: 100.00 TL")
+    var sub_total = parseFloat(subTotalText.replace(/[^\d.-]/g, ''));
+
+    // Get the text from the #shipping-cost element
+    var shippingCost = $('#shipping-cost').text();
+
+    // Extract the numerical part from shipping cost
+    var shipping_cost = parseFloat(shippingCost.replace(/[^\d.-]/g, ''));
+
+    // Get the text from the #vat-cost element
+    var vat = $('#vat-cost').text();
+
+    // Extract the numerical part from VAT cost
+    var vat_cost =  parseFloat(vat.replace(/[^\d.-]/g, ''));
+
+    // Calculate and update the total price
+    $('#total-price').text(translations.total + ': ' + ((vat_cost + shipping_cost + sub_total).toFixed(2)) + ' TL');
+}
+
+
+
 // Load cart items on page load
 loadCart();
 updateCartCount();
+calculateTotal();
 
 function updateCartCount() {
     const itemCount = cartItems.length; // Get the current number of items in the cart
@@ -845,6 +841,7 @@ $(document).on('click', '.product-info:not(.cart-item)', function() {
     saveCart();
     updateCartDisplay();
     updateCartCount();
+    calculateTotal();
 });
 
 
@@ -855,6 +852,7 @@ $(document).on('click', '.delete-icon', function() {
     saveCart();
     updateCartDisplay();
     updateCartCount();
+    calculateTotal();
 });
 
 // Handle increment and decrement of quantity
@@ -865,6 +863,7 @@ $(document).on('click', '.inc', function() {
     saveCart();
     updateCartDisplay();
     updateCartCount();
+    calculateTotal();
 });
 
 $(document).on('click', '.dec', function() {
@@ -876,6 +875,7 @@ $(document).on('click', '.dec', function() {
     saveCart();
     updateCartDisplay();
     updateCartCount();
+    calculateTotal();
 });
 
 $('a.text-danger').on('click', function() {
@@ -884,6 +884,7 @@ $('a.text-danger').on('click', function() {
     saveCart(); // Save the empty cart to localStorage
     updateCartDisplay(); // Update the display to reflect the empty cart
     updateCartCount();
+    calculateTotal();
 });
 
 // Function to update price based on quantity
@@ -911,10 +912,25 @@ $('.submit_order').on('click', function() {
     const phone = $('#user_phone').val();
     const address = $('#customer_address').val();
 
+    // Get the text from the #shipping-cost element
+    var shippingCost = $('#shipping-cost').text();
+
+    // Extract the numerical part from shipping cost
+    var shipping_cost = parseFloat(shippingCost.replace(/[^\d.-]/g, ''));
+
+    
+
+    var total = $('#total-price').text();
+
+    // Extract the numerical part from VAT cost
+    var total_cost =  parseFloat(total.replace(/[^\d.-]/g, ''));
+
+
     const userLanguage = currentLocale;
     var userSession = @json(session('user'));
 
     const userId = userSession ? userSession.id : null;
+
 
     if (cartItems.length === 0) {
         Swal.fire({
@@ -962,7 +978,11 @@ $('.submit_order').on('click', function() {
             name: customerName,
             phone: phone,
             address: address,
-            userId: userId 
+            userId: userId,
+            shipping_cost: shipping_cost,
+            total : total_cost,
+            vat: vat_cost,
+            coupon_code: $('#coupon').val()
         },
         items: cartItems // Assuming cartItems contains the products in the cart
     };
@@ -1007,6 +1027,50 @@ $('.submit_order').on('click', function() {
 
 
 
+$('#apply-coupon').click(function(event){
+    event.preventDefault(); // Prevent the form from submitting if inside a form
+    var couponValue = $('#coupon').val(); // Get the value of the coupon input
+    const userLanguage = currentLocale;
+
+    var new_sub_total = 0;
+
+    // Get the text from the #sub-total-price element
+    var subTotalText = $('#sub-total-price').text();
+    console.log("Sub-total text:", subTotalText); // Log the sub-total text
+
+    // Extract the numerical part (assuming the format is like "Subtotal: 100.00 TL")
+    var sub_total = parseFloat(subTotalText.replace(/[^\d.-]/g, ''));
+    console.log("Extracted sub_total:", sub_total); // Log the extracted sub_total
+
+    $.ajax({
+        url: `${API_BASE_URL}/apply-coupon`, // Use the API_BASE_URL and endpoint for creating an order
+        method: 'GET',
+        data: { coupon: couponValue },
+        headers: {
+            'Accept-Language': userLanguage, // Set the language header based on user preference
+            'Content-Type': 'application/json',
+            'Accept': 'application/json',
+            'secret-key': SECRET_KEY, // Use the secret key from the environment
+            'api-key': API_KEY // Use the API key from the environment
+        },
+        success: function(response) {      
+            console.log("API response:", response); // Log the API response
+            if (response.coupon && typeof response.coupon[0].discount === 'number') {
+                new_sub_total = sub_total - response.coupon[0].discount;
+
+                $('#sub-total-price').text(`${translations.sub_total} ${new_sub_total.toFixed(2)} TL`); // Display total with 2 decimal points
+                calculateTotal();
+                $('#apply-coupon').prop('disabled', true);
+
+            } else {
+                console.error("Invalid discount value:", response.coupon.discount);
+            }
+        },
+        error: function(jqXHR, textStatus, errorThrown) {
+            console.error("Error applying coupon:", textStatus, errorThrown);
+        }
+    });
+});
 
 
 

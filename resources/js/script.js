@@ -2314,6 +2314,7 @@ function updatePagination(pagination,categoryId) {
 
     const paginationLinks = $('#pagination-links');
     paginationLinks.empty(); // Clear previous pagination
+	
 
     if (pagination.total > 1) {
         const ul = $('<ul style="direction:ltr;" class="pagination justify-content-center"></ul>');

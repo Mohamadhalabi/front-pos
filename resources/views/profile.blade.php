@@ -1,88 +1,76 @@
 <?php $page = 'profile'; ?>
 @extends('layout.mainlayout')
 @section('content')
-    <div class="page-wrapper">
+    <div class="page-wrapper container" @if(app()->getLocale() == 'ar') style="direction: rtl;" @endif>
         <div class="content">
             <div class="page-header">
                 <div class="page-title">
-                    <h4>Profile</h4>
-                    <h6>User Profile</h6>
+                    <h4>{{ __('messages.profile') }}</h4>
+                    <h6>{{ __('messages.user_profile') }}</h6>
                 </div>
             </div>
+            @if (session('message'))
+                <div class="alert alert-success">
+                    {{ session('message') }}
+                </div>
+            @endif
+
+            <!-- Display Error Message -->
+            @if ($errors->any())
+                <div class="alert alert-danger">
+                    <ul>
+                        @foreach ($errors->all() as $error)
+                            <li>{{ $error }}</li>
+                        @endforeach
+                    </ul>
+                </div>
+            @endif
             <!-- /product list -->
             <div class="card">
                 <div class="card-body">
-                    <div class="profile-set">
-                        <div class="profile-head">
-
-                        </div>
-                        <div class="profile-top">
-                            <div class="profile-content">
-                                <div class="profile-contentimg">
-                                    <img src="{{ URL::asset('/build/img/customer/customer5.jpg') }}" alt="img"
-                                        id="blah">
-                                    <div class="profileupload">
-                                        <input type="file" id="imgInp">
-                                        <a href="javascript:void(0);"><img
-                                                src="{{ URL::asset('/build/img/icons/edit-set.svg') }}" alt="img"></a>
+                    <form action="{{ route('profile.update') }}" method="POST">
+                        @csrf
+                        <div class="row">
+                            <input type="hidden" id="custId" name="id" value="{{ session('user.id') }}">
+                            <div class="col-lg-6 col-sm-12">
+                                <div class="input-blocks">
+                                    <label class="form-label">{{ __('messages.first_name') }}</label>
+                                    <input type="text" name="name" required class="form-control" value="{{ session('user.name') }}">
+                                </div>
+                            </div>
+                            <div class="col-lg-6 col-sm-12">
+                                <div class="input-blocks">
+                                    <label>{{ __('messages.email') }}</label>
+                                    <input type="email" name="email" required class="form-control" value="{{ session('user.email') }}">
+                                </div>
+                            </div>
+                            <div class="col-lg-6 col-sm-12">
+                                <div class="input-blocks">
+                                    <label class="form-label">{{ __('messages.phone') }}</label>
+                                    <input type="text" name="phone" required class="form-control" value="{{ session('user.phone') }}">
+                                </div>
+                            </div>
+                            <div class="col-lg-6 col-sm-12">
+                                <div class="input-blocks">
+                                    <label class="form-label">{{ __('messages.password') }}</label>
+                                    <div class="pass-group">
+                                        <input type="password" name="password" class="pass-input form-control">
+                                        <span class="fas toggle-password fa-eye-slash"></span>
                                     </div>
                                 </div>
-                                <div class="profile-contentname">
-                                    <h2>William Castillo</h2>
-                                    <h4>Updates Your Photo and Personal Details.</h4>
+                            </div>
+                            <div class="col-lg-12 col-sm-12">
+                                <div class="input-blocks">
+                                    <label class="form-label">{{ __('messages.address') }}</label>
+                                    <textarea class="form-control" name="address" required id="exampleFormControlTextarea1" rows="3">{{ session('user.address') }}</textarea>
                                 </div>
                             </div>
-                            <!-- <div class="ms-auto">
-                                <a href="javascript:void(0);" class="btn btn-submit me-2">Save</a>
-                                <a href="javascript:void(0);" class="btn btn-cancel">Cancel</a>
-                            </div> -->
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-lg-6 col-sm-12">
-                            <div class="input-blocks">
-                                <label class="form-label">First Name</label>
-                                <input type="text" class="form-control" value="William">
+                            <div class="col-12">
+                                <button type="submit" class="btn btn-submit me-2">{{ __('messages.save') }}</button>
+                                <a href="javascript:void(0);" class="btn btn-cancel">{{ __('messages.cancel') }}</a>
                             </div>
                         </div>
-                        <div class="col-lg-6 col-sm-12">
-                            <div class="input-blocks">
-                                <label class="form-label">Last Name</label>
-                                <input type="text" class="form-control" value="Castilo">
-                            </div>
-                        </div>
-                        <div class="col-lg-6 col-sm-12">
-                            <div class="input-blocks">
-                                <label>Email</label>
-                                <input type="email" class="form-control" value="william@example.com">
-                            </div>
-                        </div>
-                        <div class="col-lg-6 col-sm-12">
-                            <div class="input-blocks">
-                                <label class="form-label">Phone</label>
-                                <input type="text" value="+1452 876 5432">
-                            </div>
-                        </div>
-                        <div class="col-lg-6 col-sm-12">
-                            <div class="input-blocks">
-                                <label class="form-label">User Name</label>
-                                <input type="text" class="form-control" value="William Castilo">
-                            </div>
-                        </div>
-                        <div class="col-lg-6 col-sm-12">
-                            <div class="input-blocks">
-                                <label class="form-label">Password</label>
-                                <div class="pass-group">
-                                    <input type="password" class="pass-input form-control">
-                                    <span class="fas toggle-password fa-eye-slash"></span>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-12">
-                            <a href="javascript:void(0);" class="btn btn-submit me-2">Submit</a>
-                            <a href="javascript:void(0);" class="btn btn-cancel">Cancel</a>
-                        </div>
-                    </div>
+                    </form>
                 </div>
             </div>
             <!-- /product list -->

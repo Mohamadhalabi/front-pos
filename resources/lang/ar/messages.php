@@ -53,6 +53,66 @@ return [
     'notify_me' => 'أبلغني عند التوفر',
     'enter_email' => 'أدخل عنوان بريدك الإلكتروني',
     'submit' => 'إرسال',
+    'logout' => 'تسجيل الخروج',
+    
+    'profile' => 'الملف الشخصي',
+    'user_profile' => 'ملف المستخدم',
+    'update_photo' => 'قم بتحديث صورتك وتفاصيلك الشخصية.',
+    'first_name' => 'الاسم الأول',
+    'last_name' => 'اسم العائلة',
+    'email' => 'البريد الإلكتروني',
+    'phone' => 'الهاتف',
+    'user_name' => 'اسم المستخدم',
+    'password' => 'كلمة المرور',
+    'save' => 'حفظ',
+    'cancel' => 'إلغاء',
+    'updated_successfully' => 'تم تحديث بياناتك',
+
+
+    'order_details' => 'تفاصيل الطلب',
+    'message_success' => 'نجاح!',
+    'error_message' => 'خطأ',
+    'sku' => 'رمز المخزون',
+    'title' => 'العنوان',
+    'image' => 'الصورة',
+    'quantity' => 'الكمية',
+    'price' => 'السعر',
+    'total' => 'المجموع',
+
+    'orders_page_title' => 'الطلبات',
+    'success_message' => 'تمت العملية بنجاح.',
+    'error_message' => 'حدث خطأ. يرجى التحقق من التفاصيل أدناه:',
+    'table_headers' => [
+        'number' => '#',
+        'payment_status' => 'حالة الدفع',
+        'order_status' => 'حالة الطلب',
+        'total' => 'الإجمالي',
+        'address' => 'العنوان',
+        'phone' => 'الهاتف',
+        'date' => 'التاريخ',
+        'action' => 'الإجراء',
+    ],
+    'details_button' => 'التفاصيل',
+
+    'complains' => 'الشكاوى',
+    'orders' => 'الأوردرات',
+    'profile' => 'الحساب',
+
+    'subject' => 'الموضوع',
+    'message' => 'الرسالة',
+    'complain' => 'الشكوى',
+
+    'login_successful' => 'تسجيل الدخول بنجاح',
+    'logout_successful' => 'تم تسجيل الخروج بنجاح.',
+    'user_registered' => 'تم تسجيل المستخدم بنجاح',
+    'updated_successfully' => 'تم تحديث الملف الشخصي بنجاح',
+    'update_failed' => 'فشل تحديث الملف الشخصي',
+    'complain_submitted' => 'تم الإرسال بنجاح.',
+    'coupon' => 'كوبون',
+    'apply' => 'تطبيق',
+
+    'sub_categories' => 'الفئات الفرعية',
+    'select_from_sub_categories' => 'اختر من الفئات الفرعية',
 
     'modal' => [
         'map_modal' => [

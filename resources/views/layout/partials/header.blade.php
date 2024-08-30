@@ -94,10 +94,29 @@
                             <a class="dropdown-item" href="{{ url('general-settings') }}">
                                 <i class="me-2" data-feather="settings"></i> Settings
                             </a> -->
+
+                            <hr class="m-0">
+                            <a class="dropdown-item logout pb-0" href="{{ route('profile') }}">
+                            <img src="{{ URL::asset('/build/img/icons/user-icon.svg') }}" class="me-2" alt="img">  {{ __('messages.profile') }}
+                            </a>    
+
+
+                            <hr class="m-0">
+                            <a class="dropdown-item logout pb-0" href="{{ route('orders') }}">
+                            <img src="{{ URL::asset('/build/img/icons/wallet1.svg') }}" class="me-2" alt="img"> {{ __('messages.orders') }}
+                            </a>   
+                            
+                            <hr class="m-0">
+                            <a class="dropdown-item logout pb-0" href="{{ route('complains') }}">
+                            <img src="{{ URL::asset('/build/img/icons/settings.svg') }}" class="me-2" alt="img"> {{ __('messages.complains') }}
+                            </a>              
+                            
                             <hr class="m-0">
                             <a class="dropdown-item logout pb-0" href="{{ route('logout') }}">
-                            <img src="{{ URL::asset('/build/img/icons/log-out.svg') }}" class="me-2" alt="img"> Logout
+                            <img src="{{ URL::asset('/build/img/icons/log-out.svg') }}" class="me-2" alt="img"> {{ __('messages.logout') }}
                             </a>
+                            <hr class="m-0">
+
                         </div>
                     </div>
                 @else

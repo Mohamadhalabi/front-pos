@@ -53,6 +53,69 @@ return [
     'notify_me' => 'Notify Me When Available',
     'enter_email' => 'Enter your email address',
     'submit' => 'Submit',
+    'logout' => 'Logout',
+
+    'profile' => 'Profile',
+    'user_profile' => 'User Profile',
+    'update_photo' => 'Updates Your Photo and Personal Details.',
+    'first_name' => 'First Name',
+    'last_name' => 'Last Name',
+    'email' => 'Email',
+    'phone' => 'Phone',
+    'user_name' => 'User Name',
+    'password' => 'Password',
+    'save' => 'Save',
+    'cancel' => 'Cancel',
+    'updated_successfully' => 'Updated Successfully',
+
+    'order_details' => 'Order details',
+    'message_success' => 'Success!',
+    'error_message' => 'Error',
+    'sku' => 'SKU',
+    'title' => 'Title',
+    'image' => 'Image',
+    'quantity' => 'Quantity',
+    'price' => 'Price',
+    'total' => 'Total',
+
+    'orders_page_title' => 'Orders',
+    'success_message' => 'The operation was successful.',
+    'error_message' => 'An error occurred. Please check the details below:',
+    'table_headers' => [
+        'number' => '#',
+        'payment_status' => 'Payment Status',
+        'order_status' => 'Order Status',
+        'total' => 'Total',
+        'address' => 'Address',
+        'phone' => 'Phone',
+        'date' => 'Date',
+        'action' => 'Action',
+    ],
+    'details_button' => 'Details',
+    'complains' => 'complaints',
+    'orders' => 'orders',
+    'profile' => 'account',
+
+    'subject' => 'Subject',
+    'message' => 'Message',
+    'complain' => 'Complains',
+
+    'login_successful' => 'Login successful',
+    'logout_successful' => 'Successfully logged out.',
+    'user_registered' => 'User registered successfully',
+    'updated_successfully' => 'Profile updated successfully',
+    'update_failed' => 'Profile update failed',
+    'complain_submitted' => 'Successfully Submitted.',
+
+    'coupon' => 'Coupon',
+
+    'apply' => 'Apply',
+
+
+    'sub_categories' => 'Sub Categories',
+    'select_from_sub_categories' => 'Select from below sub categories',
+
+
 
     'modal' => [
         'map_modal' => [

@@ -5,6 +5,11 @@
         <div class="login-wrapper login-new">
             <div class="container">
                 <div class="login-content user-login">
+                        @if(session('message'))
+                        <div class="alert alert-success">
+                            {{ session('message') }}
+                        </div>
+                    @endif
                     <form method="POST" action="{{ route('signin.custom') }}">
                         @csrf
                         <div class="login-userset">

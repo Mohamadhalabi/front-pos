@@ -21,6 +21,17 @@ Route::post('customer-register', [CustomAuthController::class, 'customRegister']
 Route::get('signout', [CustomAuthController::class, 'signOut'])->name('signout');
 Route::get('logout', [CustomAuthController::class, 'logout'])->name('logout');
 
+Route::get('/profile', [CustomAuthController::class, 'profile'])->name('profile');
+
+Route::post('/profile/update', [CustomAuthController::class, 'profile_update'])->name('profile.update');
+
+
+Route::get('/orders', [CustomAuthController::class, 'orders'])->name('orders');
+Route::get('/orders/{uuid}', [CustomAuthController::class, 'order_details'])->name('order_details');
+
+Route::get('/complains', [CustomAuthController::class, 'complains'])->name('complains');
+Route::get('/complains-submit', [CustomAuthController::class, 'complains_submit'])->name('complains.submit');
+
 
 Route::get('/', function () {
     return redirect('/pos');
@@ -610,9 +621,7 @@ Route::get('/', function () {
 //     return view('profit-and-loss');
 // })->name('profit-and-loss');
 
-// Route::get('/profile', function () {
-//     return view('profile');
-// })->name('profile');
+
 
 // Route::get('/under-maintenance', function () {
 //     return view('under-maintenance');

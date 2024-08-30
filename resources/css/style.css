@@ -10416,7 +10416,7 @@ table.dataTable thead > tr > th.no-sort.sorting::after {
   -webkit-transition: all 0.5s ease;
   -ms-transition: all 0.5s ease;
   transition: all 0.5s ease;
-  margin: 0 0 0 260px;
+  /* margin: 0 0 0 260px; */
   padding: 66px 0 0;
   position: relative;
   left: 0;
