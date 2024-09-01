@@ -246,6 +246,7 @@
     var vat_cost = "<?php echo $settings['data']['vat_cost']; ?>";
     var longitude2 = "<?php echo $settings['data']['longitude']; ?>";
     var latitude2 = "<?php echo $settings['data']['latitude']; ?>";
+    var free_shipping = "<?php echo $settings['data']['free_shipping']; ?>";
 
 </script>
 <script>
@@ -424,6 +425,7 @@ $(document).ready(function() {
                 </tr>`;
         }
     }
+    
 
     // Display the attributes section if there are any attributes
     if (attributesHtml !== '') {
@@ -543,8 +545,14 @@ $('.get-location').on('click', function() {
 
             var distance = getDistanceFromLatLonInKm(latitude2, longitude2, latitude, longitude);
             var shippingCost = distance * shipping_cost_per_meter;
-            $("#shipping-cost").text(shippingCost.toFixed(2));
-            calculateTotal();
+
+            if(free_shipping == 1){
+
+            }
+            else{
+                $("#shipping-cost").text(shippingCost.toFixed(2));
+                calculateTotal();
+            }
         },
         error: function(xhr, status, error) {
             console.error('Error:', error);
@@ -700,6 +708,10 @@ function calculateTotal() {
 
     // Extract the numerical part from VAT cost
     var vat_cost =  parseFloat(vat.replace(/[^\d.-]/g, ''));
+    
+    if(free_shipping == 1){
+        shipping_cost = 0;
+    }
 
     // Calculate and update the total price
     $('#total-price').text(translations.total + ': ' + ((vat_cost + shipping_cost + sub_total).toFixed(2)) + ' TL');
@@ -739,6 +751,27 @@ $(document).on('click', '.product-info:not(.cart-item)', function() {
         // Get product attributes
         let productattributes = $(this).find('.product-attributes a').text();
 
+
+        let productAttributes = JSON.parse(productattributes);
+
+
+        //products attribute start from 1 
+            // Check if the array has at least one element and the first element is not undefined
+            if (productAttributes.length > 0 && productAttributes[0].hasOwnProperty('from')) {
+                let fromValue = productAttributes[0].from;
+
+                // Check if 'from' equals 1 and assign the price to salePrice if it does
+                if (fromValue === 1) {
+                    salePrice = productAttributes[0].price;
+                } else {
+                    salePrice = salePriceText ? salePriceText : price;
+                }
+            } else {
+                // If the 'from' property does not exist or the array is empty, assign default value
+                salePrice = salePriceText ? salePriceText : price;
+            }
+
+        //end
         let productStock = parseInt($(this).find('.product-stock a').text());
 
         let product = {
@@ -911,6 +944,7 @@ $('.submit_order').on('click', function() {
     const customerName = $('#customer_name').val();
     const phone = $('#user_phone').val();
     const address = $('#customer_address').val();
+    const address_details = $('#address_details').val();
 
     // Get the text from the #shipping-cost element
     var shippingCost = $('#shipping-cost').text();
@@ -935,7 +969,6 @@ $('.submit_order').on('click', function() {
     if (cartItems.length === 0) {
         Swal.fire({
             icon: 'warning',
-            title: 'Empty Cart',
             text: messages2.empty_cart,
             confirmButtonText: 'OK'
         });
@@ -945,7 +978,6 @@ $('.submit_order').on('click', function() {
     else if (customerName.length < 3) {
         Swal.fire({
             icon: 'warning',
-            title: 'Invalid Name',
             text: messages2.invalid_name,
             confirmButtonText: 'OK'
         });
@@ -955,7 +987,6 @@ $('.submit_order').on('click', function() {
     else if (phone.length < 4) {
         Swal.fire({
             icon: 'warning',
-            title: 'Invalid Phone',
             text: messages2.invalid_phone,
             confirmButtonText: 'OK'
         });
@@ -965,19 +996,18 @@ $('.submit_order').on('click', function() {
     else if (address.length < 6) {
         Swal.fire({
             icon: 'warning',
-            title: 'Invalid Address',
             text: messages2.invalid_address,
             confirmButtonText: 'OK'
         });
         return; // Early return to prevent AJAX call
     }
-    
     // Prepare the data to send to the backend
     const cartData = {
         customer: {
             name: customerName,
             phone: phone,
             address: address,
+            address_details: address_details,
             userId: userId,
             shipping_cost: shipping_cost,
             total : total_cost,

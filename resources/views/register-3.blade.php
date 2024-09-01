@@ -26,7 +26,7 @@
                     <div class="form-login">
                         <label>{{ __('messages.email_address') }}</label>
                         <div class="form-addons" style="display: flex; align-items: center;">
-                            <input type="email" name="email" required class="form-control" value="{{ old('email') }}" style="flex: 1;">
+                            <input type="email" name="email" class="form-control" value="{{ old('email') }}" style="flex: 1;">
                             <img class="email-icon" src="{{ URL::asset('/build/img/icons/mail.svg') }}" alt="img" style="margin-left: 8px;">
                         </div>
                         @error('email')
@@ -49,8 +49,9 @@
                         <label>{{ __('messages.address') }}</label>
                         <div class="form-addons" style="display: flex; align-items: center;">
                             <input type="text" style="flex: 1;" name="address" id="customer_address" required class="form-control" value="{{ old('address') }}">
-                            <img class="email-icon" id="get-location" src="{{ URL::asset('/build/img/icons/places.svg') }}" alt="img" style="margin-left: 8px;">
                         </div>
+                        <button type="button" class="d-flex m-auto mt-1 btn btn-info" id="get-location">{{ __('messages.get_current_address') }}</button>
+
                         @error('address')
                             <div class="text-danger">{{ $message }}</div>
                         @enderror

@@ -967,8 +967,9 @@ $(document).ready(function(){
 		var $theTab = $this.attr('id');
 	
 		$('#product-list').html('');
-	
-		if (!$this.hasClass('active')) {
+		$('#product-list').empty();
+
+		// if (!$this.hasClass('active')) {
 			$this.closest('.tabs_wrapper').find('ul.tabs li, .tabs_container .tab_content').removeClass('active');
 			$('.tabs_container .tab_content[data-tab="' + $theTab + '"], ul.tabs li[id="' + $theTab + '"]').addClass('active');
 	
@@ -997,7 +998,7 @@ $(document).ready(function(){
 					$categoryList.empty(); // Clear existing categories
 	
 					// Append new category items
-					response.forEach(function(category) {
+					response.category_data.forEach(function(category) {
 						const categoryItem = `
 							<li id="${category.id}" data-id="${category.id}" class="category-item sub-category-item" style="cursor: pointer;padding-top:0">
 								<a href="#" class="category-link">
@@ -1033,12 +1034,83 @@ $(document).ready(function(){
 							1401: { items: 8 }
 						}
 					});
+
+					// prodcuts belong to parent category
+
+            // Clear the previous product list
+            $('#product-list').empty();
+
+            // Check if products are returned
+            if (response.products.length > 0) {
+                response.products.forEach(function(product) {
+                    // Create a product card HTML structure
+                    const productCard = `
+                        <div class="col-sm-4 col-md-6 col-lg-4 col-xl-3 pe-2">
+                            <div class="product-info default-cover card mb-0">
+                                <a href="javascript:void(0);" class="img-bg">
+                                    <img src="${product.image}" alt="Products" width="100" height="100" style="mix-blend-mode: multiply;">
+                                    <span><i data-feather="check" class="feather-16"></i></span>
+                                </a>
+                                <h6 class="cat-name text-center"><a class="product-category" href="javascript:void(0);">${product.sku}</a></h6>
+                                <h6 class="product-name mt-2 text-center"><a href="javascript:void(0);">${product.name}</a></h6>
+                                <div class="price">
+                                    <div class="row">
+                                        <div class="col-6 price2">
+                                            <p style="color:red;font-weight:bold;font-size:16px">
+                                                ${product.sale_price !== null ? 
+                                                    `<span class="price3" style="text-decoration: line-through; color: gray; display: ruby;">${product.price} TL</span>
+                                                     <span class="price4">${product.sale_price} TL</span>` : 
+                                                    `<span class="price4">${product.price} TL</span>`
+                                                }
+                                            </p>
+                                        </div>
+                                        <div class="col-6">
+                                            <p style="float: ${userLanguage === 'ar' ? 'left' : 'right'};">${product.category}</p>
+                                        </div>
+										<div class="d-none">
+											<h6 class="product-attributes mt-2 text-center"><a href="javascript:void(0);">${JSON.stringify(product.attributes)}</a></h6>
+											<h6 class="product-stock mt-2 text-center"><a href="javascript:void(0);">${product.quantity}</a></h6>
+										</div>
+                                    </div>
+                                </div>
+                            </div>
+                            <button type="button" class="btn btn-secondary quick-view-button" 
+                                data-product-id="${product.id}"
+                                data-product-name="${product.name}"
+                                data-product-sku="${product.sku}"
+                                data-product-price="${product.price}"
+                                data-product-sale-price="${product.sale_price}"
+                                data-product-category="${product.category}"
+                                data-product-description="${product.description}"
+                                data-product-gallery='${product.gallery}'
+                                data-product-attributes='${JSON.stringify(product.attributes)}'>
+                                ${translations.quickview}
+                            </button>
+                        </div>
+                    `;
+                    // Append the product card to the product list
+                    $('#product-list').append(productCard);
+                });
+            } else {
+                $('#product-list').append('<div class="col-12 text-center">No products found.</div>');
+            }
+
+            // Update pagination
+            updatePagination(response.pagination, $theTab);
+
+
+
+
+
+
+
+
 				},
 				error: function(xhr, status, error) {
 					console.error('Error:', error);
 				}
 			});
-		}
+		// }
 	});
 	
 	// Handle click on sub-category items
@@ -1063,9 +1135,6 @@ $('.pos-sub-category').on('click', '.sub-category-item a', function(event) {
             'api-key': API_KEY
         },
         success: function(response) {
-
-			console.log(translations);
-
             // Clear the previous product list
             $('#product-list').empty();
 
@@ -1194,8 +1263,11 @@ $('.pos-sub-category').on('click', '.sub-category-item a', function(event) {
 			$('.custom-carousel-control').hide();
 		}
 		
+
+
+		if(productAttributes.length > 0){
 		// Create table headers and populate attributes
-		var attributesHtml = `
+			var attributesHtml = `
 			<tr>
 				<th>${translations.from}</th>
 				<th>${translations.to}</th>
@@ -1218,7 +1290,12 @@ $('.pos-sub-category').on('click', '.sub-category-item a', function(event) {
 			$('#modal-attributes-title').hide();
 			$('#modal-product-attributes').html('');
 		}
-		
+	}else{
+		var attributesHtml = ``
+		$('#modal-product-attributes').html(attributesHtml);
+		$('#modal-attributes-title').hide();
+	}
+	
 		$('#quickViewModal').modal('show');
 	});
 	
@@ -2092,41 +2169,6 @@ $(document).ready(function(){
 		})
 	}
 
-
-
-	// if($('.pos-sub-category').length > 0) {      
-	// 	$('.pos-sub-category').owlCarousel({
-	// 		items: 15,
-	// 		loop:false,
-	// 		margin:8,
-	// 		nav:true,
-	// 		dots: false,
-	// 		autoplay:false,
-	// 		smartSpeed: 1000,
-	// 		navText: ['<i class="fas fa-chevron-left"></i>', '<i class="fas fa-chevron-right"></i>'],
-	// 		responsive:{
-	// 			0:{
-	// 				items:2
-	// 			},
-	// 			500:{
-	// 				items:4
-	// 			},
-	// 			768:{
-	// 				items:6
-	// 			},
-	// 			991:{
-	// 				items:6
-	// 			},
-	// 			1200:{
-	// 				items:6
-	// 			},
-	// 			1401:{
-	// 				items:8
-	// 			}
-	// 		}
-	// 	})
-	// }
-
 	if($('.folders-carousel').length > 0) {
 		$('.folders-carousel').owlCarousel({
 		    loop:true,
@@ -2314,9 +2356,8 @@ function updatePagination(pagination,categoryId) {
 
     const paginationLinks = $('#pagination-links');
     paginationLinks.empty(); // Clear previous pagination
-	
 
-    if (pagination.total > 1) {
+    if (pagination.last_page != 1) {
         const ul = $('<ul style="direction:ltr;" class="pagination justify-content-center"></ul>');
 
         // Previous button
@@ -2386,8 +2427,6 @@ function loadPage(page,categoryId) {
 function updateProductList(products) {
 	const userLanguage = currentLocale;
     products.forEach(function(product) {
-
-		alert(product.id);
         const productCard = `
             <div class="col-sm-4 col-md-6 col-lg-4 col-xl-3 pe-2">
                 <div class="product-info default-cover card mb-0">

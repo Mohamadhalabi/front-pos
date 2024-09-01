@@ -112,7 +112,7 @@
                             </a>              
                             
                             <hr class="m-0">
-                            <a class="dropdown-item logout pb-0" href="{{ route('logout') }}">
+                            <a class="dropdown-item logout pb-0"  href="{{ route('logout') }}" onclick="localStorage.clear();">
                             <img src="{{ URL::asset('/build/img/icons/log-out.svg') }}" class="me-2" alt="img"> {{ __('messages.logout') }}
                             </a>
                             <hr class="m-0">

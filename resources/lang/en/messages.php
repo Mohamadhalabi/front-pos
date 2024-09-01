@@ -41,6 +41,8 @@ return [
     'invalid_name' => 'Name must be at least 3 characters long.',
     'invalid_phone' => 'Phone number must be at least 4 characters long.',
     'invalid_address' => 'Address must be at least 6 characters long.',
+    'invalid_address_details' => 'Please Enter valid address details',
+
     'payment_success' => 'Your order has been placed successfully!',
     'payment_failed' => 'There was an issue processing your payment. Please try again later.',
     'quickview' => 'Quick View',
@@ -54,6 +56,7 @@ return [
     'enter_email' => 'Enter your email address',
     'submit' => 'Submit',
     'logout' => 'Logout',
+    'address_details' => 'Address Details (Building name, Apartment Number, floor number)',
 
     'profile' => 'Profile',
     'user_profile' => 'User Profile',
@@ -99,6 +102,9 @@ return [
     'subject' => 'Subject',
     'message' => 'Message',
     'complain' => 'Complains',
+
+    'get_current_address' => 'Pick your Address',
+
 
     'login_successful' => 'Login successful',
     'logout_successful' => 'Successfully logged out.',

@@ -28,7 +28,7 @@ class CustomAuthController extends Controller
             'secret-key' => env('SECRET_KEY', 'default_value'),
             'api-key' => env('API_KEY', 'default_value'),
         ])->post(env('API_BASE_URL', 'http://backend-url') . '/login', [
-            'email' => $request->email,
+            'identifier' => $request->email,
             'password' => $request->password,
         ]);
     
@@ -49,11 +49,7 @@ class CustomAuthController extends Controller
     {
         // Clear the session
         $request->session()->flush();
-    
-        // Optionally, you can also invalidate the session token if you're using API tokens
-        // auth()->user()->tokens()->delete();
-    
-        // Redirect to /pos
+
         return redirect('/pos')->with('message', __('messages.logout_successful'));
     }    
     
@@ -68,10 +64,10 @@ class CustomAuthController extends Controller
     {  
         $request->validate([
             'name' => 'required|string|max:255',
-            'email' => 'required|string|email|max:255|unique:users',
+            // 'email' => 'string|email|max:255|unique:users',
             'password' => 'required|string|min:4',
             'address' => 'required|string|min:5',
-            'phone' => 'required',
+            'phone' => 'required|unique:users',
         ]);
 
         $response = Http::withHeaders([

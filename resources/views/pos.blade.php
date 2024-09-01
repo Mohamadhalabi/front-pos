@@ -78,25 +78,7 @@
                              @if($pagination['total'] > 1)
                             <nav aria-label="Page navigation example" id="pagination-links">
                                 <ul class="pagination justify-content-center">
-                                    @if($pagination['current_page'] > 1)
-                                    <li class="page-item">
-                                        <a class="page-link" href="{{ url()->current() }}?page={{ $pagination['current_page'] - 1 }}" aria-label="Previous">
-                                            <span aria-hidden="true">&laquo;</span>
-                                        </a>
-                                    </li>
-                                    @endif
-                                    @for ($i = 1; $i <= $pagination['last_page']; $i++)
-                                    <li class="page-item {{ $i == $pagination['current_page'] ? 'active' : '' }}">
-                                        <a class="page-link" href="{{ url()->current() }}?page={{ $i }}">{{ $i }}</a>
-                                    </li>
-                                    @endfor
-                                    @if($pagination['current_page'] < $pagination['last_page'])
-                                    <li class="page-item">
-                                        <a class="page-link" href="{{ url()->current() }}?page={{ $pagination['current_page'] + 1 }}" aria-label="Next">
-                                            <span aria-hidden="true">&raquo;</span>
-                                        </a>
-                                    </li>
-                                    @endif
+
                                 </ul>
                             </nav>
                             @endif
@@ -149,6 +131,14 @@
                                                 </div>
                                             </div>
                                         </div>
+                                        <div class="col-lg-12 col-sm-12 col-12">
+                                            <div class="input-blocks">
+                                                <label style="color:red;">{{ __('messages.address_details') }}</label>
+                                                <div class="d-flex align-items-center">
+                                                    <input type="text" id="address_details" class="form-control" value="{{ session('user.details') }}">
+                                                </div>
+                                            </div>
+                                        </div>
                                     @else
                                         <div class="col-lg-12 col-sm-12 col-12">
                                             <div class="input-blocks">
@@ -168,6 +158,15 @@
                                                 <div class="d-flex align-items-center">
                                                     <input readonly type="text" id="customer_address" class="form-control">
                                                     <i id="get-location" class="fas fa-map-marker-alt" style="cursor: pointer; margin-left: 8px; margin-right: 8px"></i>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-lg-12 col-sm-12 col-12">
+                                            <div class="input-blocks">
+                                                <label style="color:red;">{{ __('messages.address_details') }}</label>
+                                                <div class="d-flex align-items-center">
+                                                    <input type="text" id="address_details" class="form-control">
                                                 </div>
                                             </div>
                                         </div>
@@ -209,11 +208,14 @@
                             </a>
                         </div>
 
+                
+                        @if($settings['data']['free_shipping'] != 1)
                         <div class="d-grid btn-block m-0 {{ app()->getLocale() === 'ar' ? 'rtl' : '' }}">
                             <a class="btn btn-primary" href="javascript:void(0);" id="shipping-price">
                                 {{ __('messages.shipping') }}: <span id="shipping-cost">0.00</span> TL
                             </a>
                         </div>
+                        @endif
 
                         <div class="d-grid btn-block m-0 {{ app()->getLocale() === 'ar' ? 'rtl' : '' }}">
                             <a class="btn btn-dark" href="javascript:void(0);" id="vat-price">

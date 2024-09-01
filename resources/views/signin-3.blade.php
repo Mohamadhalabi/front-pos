@@ -29,9 +29,9 @@
                             @endif
 
                             <div class="form-login">
-                                <label class="form-label">{{ __('messages.email_address') }}</label>
+                                <label class="form-label">{{ __('messages.email_address') }} / phone number</label>
                                 <div class="form-addons">
-                                    <input type="email" name="email" required class="form-control" value="{{ old('email') }}">
+                                    <input type="text" name="email" required class="form-control" value="{{ old('email') }}">
                                 </div>
                             </div>
 
