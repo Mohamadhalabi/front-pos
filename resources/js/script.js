@@ -2164,7 +2164,6 @@ $(document).ready(function(){
 			dots: false,
 			autoplay:false,
 			smartSpeed: 1000,
-			navText: [$('.am-next'),$('.am-prev')]
 
 		})
 	}

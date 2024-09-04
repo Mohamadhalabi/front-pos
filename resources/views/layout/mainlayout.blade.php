@@ -837,6 +837,7 @@ $(document).on('click', '.product-info:not(.cart-item)', function() {
                 });
             } else {
                 let email = userSession.email;
+                let phone = userSession.phone;
 
                 // Send AJAX request with product SKU and logged-in user email to the backend
                 $.ajax({
@@ -844,7 +845,8 @@ $(document).on('click', '.product-info:not(.cart-item)', function() {
                     method: 'GET',
                     data: {
                         sku: productSku,
-                        email: email
+                        email: email,
+                        phone: phone
                     },
                     headers: {
                         'Accept-Language': userLanguage, // Set the language header based on user preference
@@ -854,7 +856,7 @@ $(document).on('click', '.product-info:not(.cart-item)', function() {
                         'api-key': API_KEY // Use the API key from the environment
                     },
                     success: function(response) {
-                        if (response.data.success) {
+                        if (response.success) {
                                     Swal.fire({
                                         title: userLanguage === 'ar' ? 'المنتج غير متوفر حاليا!' : 'The product is currently not available',
                                         text: userLanguage === 'ar' ? 'سنخبرك عندما يكون المنتج متاحًا مرة أخرى.' : 'We will inform you when the product is available again.',

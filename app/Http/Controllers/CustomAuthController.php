@@ -237,8 +237,37 @@ class CustomAuthController extends Controller
         return view('complains',compact('products'));
     }
 
-    public function complains_submit()
+    public function complains_submit(Request $request)
     {
+
+        $title = $request->title;
+        $subject = $request->subject;
+        $user_id = $request->id;
+
+        // Construct the API URL using double quotes to allow variable interpolation
+                $apiUrl = env('API_BASE_URL', 'http://backend-url') . '/complains-submit/' . $request->id;
+    
+                // Send the data to the external API
+                $response = Http::withHeaders([
+                    'Accept-Language' => app()->getLocale(),
+                    'Content-Type' => 'application/json',
+                    'Accept' => 'application/json',
+                    'secret-key' => env('SECRET_KEY', 'default_value'),
+                    'api-key' => env('API_KEY', 'default_value'),
+                ])->post($apiUrl, [
+                    'title' => $title,
+                    'message' => $subject,
+                ]);
+            
+                // Check if the response is successful
+                if ($response->successful()) {
+        
+                    $userInfo = $response->json('user'); // Capture the user info from the response
+        
+                    session(['user' => $userInfo]);
+        
+                    return redirect()->route('profile')->with('message', __('messages.updated_successfully'));
+                }
 
         return redirect('/complains')->with('message', __('messages.complain_submitted'));
     }

@@ -86,7 +86,7 @@
                     </div>
                 </div>
                 <div class="col-md-12 col-lg-4 ps-0">
-                    <aside class="product-order-list">
+                <aside class="product-order-list">
                     <div class="owl-carousel owl-tt owl-theme">
                         @if(isset($settings['data']['sliders']))
                             @foreach($settings['data']['sliders'] as $slider)
@@ -98,10 +98,11 @@
                             @endforeach
                         @endif
                     </div>
-                    <div class="slider_nav">
-                        <button class="am-next">Next</button>
-                        <button class="am-prev">Previous</button>
-                    </div>
+                    <!-- <div class="slider_nav">
+                        <i class="fa-solid fa-arrow-left am-prev"></i>
+                        <i class="fa-solid fa-arrow-right am-next"></i>                    
+                    </div> -->
+
 
 
                         <!-- Customer Info Section -->
@@ -208,14 +209,15 @@
                             </a>
                         </div>
 
-                
-                        @if($settings['data']['free_shipping'] != 1)
+
+                        @if(isset($settings['data']) && $settings['data']['free_shipping'] != 1)
                         <div class="d-grid btn-block m-0 {{ app()->getLocale() === 'ar' ? 'rtl' : '' }}">
                             <a class="btn btn-primary" href="javascript:void(0);" id="shipping-price">
                                 {{ __('messages.shipping') }}: <span id="shipping-cost">0.00</span> TL
                             </a>
                         </div>
                         @endif
+
 
                         <div class="d-grid btn-block m-0 {{ app()->getLocale() === 'ar' ? 'rtl' : '' }}">
                             <a class="btn btn-dark" href="javascript:void(0);" id="vat-price">

@@ -31,6 +31,7 @@
                 <div class="card-body">
                     <form action="{{ route('complains.submit') }}" method="get">
                         @csrf
+                        <input type="hidden" name="id" value="{{session('user.id')}}">
                         <div class="mb-3">
                             <label for="title" class="form-label">{{ __('messages.subject') }}</label>
                             <input type="text" class="form-control" id="title" name="title" value="{{ old('title') }}" required>
