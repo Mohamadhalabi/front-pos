@@ -91,13 +91,34 @@
                         @if(isset($settings['data']['sliders']))
                             @foreach($settings['data']['sliders'] as $slider)
                                 <div class="item">
-                                    <a href="{{ $slider['link'] }}">
-                                        <img src="{{ $slider['image'] }}" alt="Slider Image">
-                                    </a>
+
                                 </div>
                             @endforeach
                         @endif
                     </div>
+
+
+
+
+                    <div class="swiper-container">
+                        <div class="swiper-wrapper">
+                        @if(isset($settings['data']['sliders']))
+                            @foreach($settings['data']['sliders'] as $slider)
+                            <div class="swiper-slide">
+                                <a href="{{ $slider['link'] }}">
+                                            <img src="{{ $slider['image'] }}" alt="Slider Image">
+                                </a>
+                            </div>
+                            @endforeach
+                        @endif
+                        </div>
+                        <!-- Add Pagination -->
+                        <div class="swiper-pagination"></div>
+                        <!-- Add Navigation -->
+                        <div class="swiper-button-next"></div>
+                        <div class="swiper-button-prev"></div>
+                    </div>
+
                     <!-- <div class="slider_nav">
                         <i class="fa-solid fa-arrow-left am-prev"></i>
                         <i class="fa-solid fa-arrow-right am-next"></i>                    

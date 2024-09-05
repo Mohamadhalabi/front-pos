@@ -41,7 +41,7 @@
                             <div class="col-lg-6 col-sm-12">
                                 <div class="input-blocks">
                                     <label>{{ __('messages.email') }}</label>
-                                    <input type="email" name="email" required class="form-control" value="{{ session('user.email') }}">
+                                    <input type="email" name="email" class="form-control" value="{{ session('user.email') }}">
                                 </div>
                             </div>
                             <div class="col-lg-6 col-sm-12">
@@ -62,7 +62,8 @@
                             <div class="col-lg-12 col-sm-12">
                                 <div class="input-blocks">
                                     <label class="form-label">{{ __('messages.address') }}</label>
-                                    <textarea class="form-control" name="address" required id="exampleFormControlTextarea1" rows="3">{{ session('user.address') }}</textarea>
+                                    <textarea class="form-control" name="address" required id="customer_address" rows="3">{{ session('user.address') }}</textarea>
+                                    <button type="button" class="d-flex m-auto mt-1 btn btn-info" id="get-location">{{ __('messages.get_current_address') }}</button>
                                 </div>
                             </div>
                             <div class="col-12">
@@ -76,4 +77,21 @@
             <!-- /product list -->
         </div>
     </div>
+
+    <div class="modal fade" id="mapModal" tabindex="-1" aria-labelledby="mapModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg modal-dialog-centered {{ app()->getLocale() === 'ar' ? 'rtl' : '' }}">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="mapModalLabel">{{ __('messages.modal.map_modal.title') }}</h5>
+      </div>
+      <div class="modal-body">
+        <div id="MapLocation" style="height: 400px;"></div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{{ __('messages.modal.map_modal.close') }}</button>
+        <button type="button" class="btn btn-primary get-location">{{ __('messages.modal.map_modal.save_changes') }}</button>
+      </div>
+    </div>
+  </div>
+</div>
 @endsection

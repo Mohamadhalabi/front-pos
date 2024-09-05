@@ -71,6 +71,7 @@ return [
     'save' => 'حفظ',
     'cancel' => 'إلغاء',
     'updated_successfully' => 'تم تحديث بياناتك',
+    'com_sent_succ' => 'تم إرسال الشكوى بنجاح',
 
 
     'order_details' => 'تفاصيل الطلب',

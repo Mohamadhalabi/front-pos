@@ -131,7 +131,7 @@ class CustomAuthController extends Controller
         // Validate the incoming request
         $validatedData = $request->validate([
             'name' => 'required|string|max:255',
-            'email' => 'required|email|max:255',
+            // 'email' => 'required|email|max:255',
             'phone' => 'required|string|max:15',
             'password' => 'nullable|string|min:6',
             'address' => 'required|string|max:500',
@@ -149,7 +149,7 @@ class CustomAuthController extends Controller
             'api-key' => env('API_KEY', 'default_value'),
         ])->post($apiUrl, [
             'name' => $validatedData['name'],
-            'email' => $validatedData['email'],
+            'email' => isset($validatedData['email']) ? $validatedData['email'] : null,
             'password' => $validatedData['password'],
             'phone' => $validatedData['phone'],
             'address' => $validatedData['address'],
@@ -262,14 +262,11 @@ class CustomAuthController extends Controller
                 // Check if the response is successful
                 if ($response->successful()) {
         
-                    $userInfo = $response->json('user'); // Capture the user info from the response
-        
-                    session(['user' => $userInfo]);
-        
-                    return redirect()->route('profile')->with('message', __('messages.updated_successfully'));
+                    
+                    return redirect('/complains')->with('message', __('messages.com_sent_succ'));
                 }
 
-        return redirect('/complains')->with('message', __('messages.complain_submitted'));
+        return redirect('/complains')->with('error', 'Error has occured');
     }
     
     

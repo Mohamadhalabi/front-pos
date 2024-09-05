@@ -15,6 +15,9 @@
 
     @include('layout.partials.head')
 
+
+    <link rel="stylesheet" href="https://unpkg.com/swiper/swiper-bundle.min.css" />
+
     <style>
     .product-category{
         background-color: #FF9F43;
@@ -225,6 +228,8 @@
 @include('layout.partials.footer-scripts')
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
   
+
+
   <!-- Leaflet JavaScript -->
   <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
 
@@ -258,6 +263,27 @@
     const SECRET_KEY = '{{ env('SECRET_KEY', 'default_value') }}'; // Set the secret key
     const API_KEY = '{{ env('API_KEY', 'default_value') }}'; // Set the API key
 $(document).ready(function() {
+
+
+
+
+    var swiper = new Swiper('.swiper-container', {
+            loop: true, // Enable continuous loop mode
+            pagination: {
+                el: '.swiper-pagination',
+                clickable: true,
+            },
+            navigation: {
+                nextEl: '.swiper-button-next',
+                prevEl: '.swiper-button-prev',
+            },
+            autoplay: {
+                delay: 2500, // Autoplay delay in milliseconds
+                disableOnInteraction: false, // Continue autoplay after user interactions
+            },
+        });
+
+
 
     $('#vat-cost').text(vat_cost); // Replace '100.00' with the desired value
 
@@ -796,8 +822,6 @@ $(document).on('click', '.product-info:not(.cart-item)', function() {
                     e.preventDefault();
                     let email = $('#emailInput').val();
 
-                    alert(productSku);
-
                     // Send AJAX request with product SKU and user email to the backend
                     $.ajax({
                             url: `${API_BASE_URL}/notify-me`,
@@ -814,7 +838,7 @@ $(document).on('click', '.product-info:not(.cart-item)', function() {
                                 'api-key': API_KEY
                             },
                             success: function(response) {
-                                if (response.data.success) {
+                                if (response.success) {
                                     Swal.fire({
                                         title: userLanguage === 'ar' ? 'المنتج غير متوفر حاليا!' : 'The product is currently not available',
                                         text: userLanguage === 'ar' ? 'سنخبرك عندما يكون المنتج متاحًا مرة أخرى.' : 'We will inform you when the product is available again.',
@@ -1114,6 +1138,9 @@ $('#apply-coupon').click(function(event){
 
 
 </script>
+
+
+<script src="https://unpkg.com/swiper/swiper-bundle.min.js"></script>
 
 </body>
 

@@ -106,6 +106,9 @@ return [
     'get_current_address' => 'Pick your Address',
 
 
+    'com_sent_succ' => 'Your Complain has been sent',
+
+
     'login_successful' => 'Login successful',
     'logout_successful' => 'Successfully logged out.',
     'user_registered' => 'User registered successfully',
