@@ -108,7 +108,10 @@ return [
 
     'com_sent_succ' => 'Your Complain has been sent',
 
-
+    'search'=> 'Search',
+    'isearchfor' => 'I am looking for...',
+    'no_results' => 'No results found', 
+    'no_products' => 'No products found.',
     'login_successful' => 'Login successful',
     'logout_successful' => 'Successfully logged out.',
     'user_registered' => 'User registered successfully',

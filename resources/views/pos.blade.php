@@ -17,11 +17,6 @@
                                         <img src="{{ $category['icon'] }}" alt="{{ __('messages.categories') }}">
                                     </a>
                                     <h6><a href="#" class="category-link" onclick="event.stopPropagation();">{{ $category['name'] }}</a></h6>
-                                    <span>
-                                        <a href="#" class="category-link" onclick="event.stopPropagation();">
-                                        {{$category['products_count']}} {{ __('messages.items') }}
-                                        </a>
-                                    </span>
                                 </li>
                             @endforeach
                         </ul>

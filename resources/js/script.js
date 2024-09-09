@@ -3,6 +3,7 @@ Author       : Dreamguys
 Template Name: POS - Bootstrap Admin Template
 */
 
+
 $(document).ready(function(){
 
 	// Variables declarations
@@ -1005,11 +1006,6 @@ $(document).ready(function(){
 									<img src="${category.icon}" alt="{{ __('messages.categories') }}">
 								</a>
 								<h6><a href="#" class="category-link">${category.name}</a></h6>
-								<span>
-									<a href="#" class="category-link">
-										${category.products_count}
-									</a>
-								</span>
 							</li>
 						`;
 						$categoryList.append(categoryItem);
@@ -1092,7 +1088,7 @@ $(document).ready(function(){
                     $('#product-list').append(productCard);
                 });
             } else {
-                $('#product-list').append('<div class="col-12 text-center">No products found.</div>');
+				// $('#product-list').append('<div class="col-12 text-center">' + noProductsMessage + '</div>');
             }
 
             // Update pagination
@@ -1190,7 +1186,7 @@ $('.pos-sub-category').on('click', '.sub-category-item a', function(event) {
                     $('#product-list').append(productCard);
                 });
             } else {
-                $('#product-list').append('<div class="col-12 text-center">No products found.</div>');
+				// $('#product-list').append('<div class="col-12 text-center">' + noProductsMessage + '</div>');
             }
 
             // Update pagination

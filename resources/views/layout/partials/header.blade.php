@@ -27,9 +27,9 @@
     <div class="header-class d-flex" style="justify-content:space-between;margin-top:15px">
     <div>
     <ul class="nav user-menu" style="margin-left:25px">
-        <label>Search</label>
+        <label>{{ __('messages.search') }}</label>
         <li class="nav-item dropdown has-arrow flag-nav nav-item-box">
-            <input type="text" class="form-control" id="search" placeholder="Search...">
+            <input type="text" class="form-control" id="search" placeholder="{{ __('messages.isearchfor') }}">
             <div id="search-results" style="position: absolute; z-index: 1000; background: white; width: 100%; display: none;">
                 <!-- Results will be displayed here -->
             </div>

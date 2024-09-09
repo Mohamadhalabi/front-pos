@@ -252,6 +252,7 @@
     var longitude2 = "<?php echo $settings['data']['longitude']; ?>";
     var latitude2 = "<?php echo $settings['data']['latitude']; ?>";
     var free_shipping = "<?php echo $settings['data']['free_shipping']; ?>";
+    var noProductsMessage = "{{ __('messages.no_products') }}";
 
 </script>
 <script>
@@ -352,11 +353,11 @@ $(document).ready(function() {
                                 window.location.href = `${window.location.origin}/pos?search=${sku}`;
                             });
                         } else {
-                            $('#search-results').append('<div class="result-item">No results found</div>');
+                            $('#search-results').append('<div class="result-item">{{ __("messages.no_results") }}</div>');
                         }
                     },
                     error: function() {
-                        $('#search-results').empty().append('<div class="result-item">An error occurred</div>').show();
+                        $('#search-results').empty().append('<div class="result-item"></div>').show();
                     }
                 });
             } else {
@@ -807,6 +808,7 @@ $(document).on('click', '.product-info:not(.cart-item)', function() {
             originalPrice: salePrice, // Store the original price separately
             code: productSku,
             quantity: 1,
+            prodStock : productStock,
             attributes: JSON.parse(productattributes) // Store the attributes as an array of objects
         };
 
@@ -917,12 +919,14 @@ $(document).on('click', '.delete-icon', function() {
 // Handle increment and decrement of quantity
 $(document).on('click', '.inc', function() {
     let index = $(this).closest('.product-list').find('.delete-icon').data('index');
+    if(cartItems[index].quantity < cartItems[index].prodStock){
     cartItems[index].quantity += 1;
-    updatePriceBasedOnQuantity(index); // Call function to update price
+    updatePriceBasedOnQuantity(index);
     saveCart();
     updateCartDisplay();
     updateCartCount();
     calculateTotal();
+    }
 });
 
 $(document).on('click', '.dec', function() {
