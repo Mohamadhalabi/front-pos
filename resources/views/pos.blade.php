@@ -6,6 +6,81 @@
             <div class="row align-items-start pos-wrapper">
                 <div class="col-md-12 col-lg-8">
                     <div class="pos-categories tabs_wrapper {{ app()->getLocale() === 'ar' ? 'rtl' : '' }}">
+
+
+                    @if(app('request')->input('search') != '')
+                    <div class="pos-products">
+                            <div>
+                                <div class="tab_content active mb-5" data-tab="all">
+                                    <div class="row" id="product-list">
+                                    @foreach($products as $product)
+    <div class="col-sm-4 col-md-6 col-lg-4 col-xl-3 pe-2">
+        <div class="product-info default-cover card mb-0">
+            <a href="#" class="img-bg">
+                <img src="{{ $product['image'] }}" alt="Products" width="100" height="100" style="mix-blend-mode: multiply;">
+                <span><i data-feather="check" class="feather-16"></i></span>
+            </a>
+            <h6 class="cat-name text-center">
+                <a class="product-category" href="#">{{ $product['sku'] }}</a>
+            </h6>
+            <h6 class="product-name mt-2 text-center">
+                <a href="#">{{ $product['name'] }}</a>
+            </h6>
+            <div class="price">
+                <div class="row">
+                    <div class="col-6 price2">
+                        <p style="color:red;font-weight:bold;font-size:16px">
+                            @if($product['sale_price'] !== null)
+                                <span class="price3" style="text-decoration: line-through; color: gray;">{{ $product['price'] }} TL</span>
+                                <span class="price4">{{ $product['sale_price'] }} TL</span>
+                            @else
+                                <span class="price4">{{ $product['price'] }} TL</span>
+                            @endif
+                        </p>
+                    </div>
+                    <div class="col-6">
+                        <p style="float: {{ app()->getLocale() === 'ar' ? 'left' : 'right' }};">{{ $product['category'] }}</p>
+                    </div>
+                </div>
+            </div>
+            <div class="d-none">
+                <h6 class="product-attributes mt-2 text-center">
+                    <a href="#">{{ json_encode($product['attributes']) }}</a>
+                </h6>
+                <h6 class="product-stock mt-2 text-center">
+                    <a href="#">{{ $product['quantity'] }}</a>
+                </h6>
+            </div>
+        </div>
+        <button type="button" class="btn btn-secondary quick-view-button" 
+            data-product-id="{{ $product['id'] }}"
+            data-product-name="{{ $product['name'] }}"
+            data-product-sku="{{ $product['sku'] }}"
+            data-product-price="{{ $product['price'] }}"
+            data-product-sale-price="{{ $product['sale_price'] }}"
+            data-product-category="{{ $product['category'] }}"
+            data-product-description="{{ $product['description'] }}"
+            data-product-gallery="{{ json_encode($product['gallery'])}}"
+            data-product-attributes="{{ json_encode($product['attributes']) }}">
+            {{ __('quickview') }}
+        </button>
+    </div>
+@endforeach
+
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Pagination -->
+                             @if($pagination['total'] > 1)
+                            <nav aria-label="Page navigation example" id="pagination-links">
+                                <ul class="pagination justify-content-center">
+
+                                </ul>
+                            </nav>
+                            @endif
+                        </div>
+                    @else
                         <!-- CATEGORIES REGION  -->
                         <h5>{{ __('messages.categories') }}</h5>
                         <p>{{ __('messages.select_from_categories') }}</p>
@@ -28,6 +103,9 @@
                         <ul class="tabs owl-carousel pos-category pos-sub-category">
 
                         </ul>
+
+                    @endif
+
 
 
                         <!-- Products Section -->

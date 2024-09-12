@@ -498,44 +498,56 @@ $('#get-location').on('click', function() {
 
 // Initialize the map when the modal is shown
 $('#mapModal').on('shown.bs.modal', function() {
-    // Set default location
-    var curLocation = [latitude2, longitude2];
+    // Check if geolocation is available
+    if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(function(position) {
+            var curLocation = [position.coords.latitude, position.coords.longitude];
 
-    // If map is already initialized, just update the view
-    if (!map) {
-        map = L.map('MapLocation').setView(curLocation, 10);
+            lat = position.coords.latitude;
+            long = position.coords.longitude;
 
-        L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png', {
-            attribution: '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
-        }).addTo(map);
+            // If map is already initialized, just update the view
+            if (!map) {
+                map = L.map('MapLocation').setView(curLocation, 15);
 
-        map.attributionControl.setPrefix(false);
+                L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png', {
+                    attribution: '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
+                }).addTo(map);
 
-        marker = L.marker(curLocation, {
-            draggable: true
-        }).addTo(map);
+                map.attributionControl.setPrefix(false);
 
-        marker.on('dragend', function(event) {
-            var position = marker.getLatLng();
-            marker.setLatLng(position).bindPopup(position).update();
+                marker = L.marker(curLocation, {
+                    draggable: true
+                }).addTo(map);
 
-            // Update lat and long variables
-            lat = position.lat;
-            long = position.lng;
+                marker.on('dragend', function(event) {
+                    var position = marker.getLatLng();
+                    marker.setLatLng(position).bindPopup(position).update();
 
-            $("#Latitude").val(lat);
-            $("#Longitude").val(long);
-        });
+                    // Update lat and long variables
+                     lat = position.lat;
+                     long = position.lng;
 
-        $("#Latitude, #Longitude").change(function() {
-            var position = [parseFloat($("#Latitude").val()), parseFloat($("#Longitude").val())];
-            marker.setLatLng(position).bindPopup(position).update();
-            map.panTo(position);
+                    $("#Latitude").val(lat);
+                    $("#Longitude").val(long);
+                });
+
+                $("#Latitude, #Longitude").change(function() {
+                    var position = [parseFloat($("#Latitude").val()), parseFloat($("#Longitude").val())];
+                    marker.setLatLng(position).bindPopup(position).update();
+                    map.panTo(position);
+                });
+            } else {
+                map.invalidateSize(); // Fix map display issues when modal is opened
+            }
+        }, function(error) {
+            console.error("Geolocation error: " + error.message);
         });
     } else {
-        map.invalidateSize(); // Fix map display issues when modal is opened
+
     }
 });
+
 
 // Haversine formula to calculate the distance in meters
 function getDistanceFromLatLonInKm(lat1, lon1, lat2, lon2) {
