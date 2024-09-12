@@ -1054,6 +1054,8 @@ $('.submit_order').on('click', function() {
             shipping_cost: shipping_cost,
             total : total_cost,
             vat: vat_cost,
+            lat: lat,
+            long: long,
             coupon_code: $('#coupon').val()
         },
         items: cartItems // Assuming cartItems contains the products in the cart
