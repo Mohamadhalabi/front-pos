@@ -60,6 +60,10 @@
                         <img src="{{ URL::asset('/build/img/flags/sa.png') }}" alt="" height="16"> Arabic
                     </a>
 
+                    <a href="{{ route('lang.switch', 'tr') }}" class="dropdown-item selected-lang {{ app()->getLocale() == 'tr' ? 'active' : '' }}">
+                        <img src="{{ URL::asset('/build/img/flags/tr.png') }}" alt="" height="16"> Turkish
+                    </a>
+
                 </div>
             </li>
 

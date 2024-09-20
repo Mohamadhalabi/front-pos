@@ -96,7 +96,7 @@ return [
     |
     */
 
-    'locales' => ['en' => 'English', 'ar' => 'Arabic'],
+    'locales' => ['en' => 'English', 'ar' => 'Arabic', 'tr' => 'Turkish'],
 
     'fallback_locale' => 'en',
 
