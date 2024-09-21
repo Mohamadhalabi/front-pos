@@ -3,7 +3,36 @@
 
     <!-- Logo -->
     <div class="header-left active">
-        <a href="{{ url('pos') }}" class="logo logo-normal">
+        <div>
+        
+        <ul class="nav user-menu" style="display:flex!important;align-content: flex-start;justify-content: flex-start" id="language-toggle">
+    <li class="nav-item dropdown has-arrow flag-nav nav-item-box language-dropdown">
+        <a class="nav-link dropdown-toggle" href="javascript:void(0);" role="button" >
+            @if(app()->getLocale() == 'en')
+            <img src="{{ URL::asset('/build/img/flags/us.png') }}" alt="Language" class="img-fluid">
+            @elseif(app()->getLocale() == "ar")
+            <img src="{{ URL::asset('/build/img/flags/sa.png') }}" alt="Language" class="img-fluid">
+            @else
+            <img src="{{ URL::asset('/build/img/flags/tr.png') }}" alt="Language" class="img-fluid">
+            @endif
+        </a>
+        <div class="dropdown-menu dropdown-menu-right language-dropdown-menu">
+            <a href="{{ route('lang.switch', 'en') }}" class="dropdown-item selected-lang {{ app()->getLocale() == 'en' ? 'active' : '' }}">
+                <img src="{{ URL::asset('/build/img/flags/us.png') }}" alt="" height="16"> English
+            </a>
+            <a href="{{ route('lang.switch', 'ar') }}" class="dropdown-item selected-lang {{ app()->getLocale() == 'ar' ? 'active' : '' }}">
+                <img src="{{ URL::asset('/build/img/flags/sa.png') }}" alt="" height="16"> Arabic
+            </a>
+            <a href="{{ route('lang.switch', 'tr') }}" class="dropdown-item selected-lang {{ app()->getLocale() == 'tr' ? 'active' : '' }}">
+                <img src="{{ URL::asset('/build/img/flags/tr.png') }}" alt="" height="16"> Turkish
+            </a>
+        </div>
+    </li>
+</ul>
+
+    </div>
+
+        <a href="#" class="logo logo-normal">
             <img src="{{$settings['data']['setting']['website']['system_logo_black']}}" alt="">
         </a>
         <a href="{{ url('pos') }}" class="logo-small">
@@ -15,13 +44,6 @@
     </div>
     <!-- /Logo -->
 
-    <a id="mobile_btn" class="mobile_btn" href="#sidebar">
-        <span class="bar-icon">
-            <span></span>
-            <span></span>
-            <span></span>
-        </span>
-    </a>
 
     <!-- Header Menu -->
     <div class="header-class d-flex" style="justify-content:space-between;margin-top:15px">
@@ -45,10 +67,12 @@
             <li class="nav-item dropdown has-arrow flag-nav nav-item-box">
                 <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="javascript:void(0);" role="button">
 
-            @if(app()->getLocale() != 'ar')
+            @if(app()->getLocale() == 'en')
             <img src="{{ URL::asset('/build/img/flags/us.png') }}" alt="Language" class="img-fluid">
-            @else
+            @elseif(app()->getLocale() == "ar")
             <img src="{{ URL::asset('/build/img/flags/sa.png') }}" alt="Language" class="img-fluid">
+            @else
+            <img src="{{ URL::asset('/build/img/flags/tr.png') }}" alt="Language" class="img-fluid">
             @endif
 
                 </a>
@@ -137,6 +161,10 @@
 
     <!-- /Header Menu -->
 
+    
+
+
+
     <!-- Mobile Menu -->
     <div class="dropdown mobile-user-menu">
         <a href="javascript:void(0);" class="nav-link dropdown-toggle" data-bs-toggle="dropdown"
@@ -146,6 +174,7 @@
             <a class="dropdown-item" href="{{ url('general-settings') }}">Settings</a>
             <a class="dropdown-item" href="{{ url('signin') }}">Logout</a>
         </div>
+        
     </div>
     <!-- /Mobile Menu -->
 </div>

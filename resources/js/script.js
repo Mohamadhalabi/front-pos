@@ -1122,88 +1122,93 @@ $('.pos-sub-category').on('click', '.sub-category-item a', function(event) {
 	let storedCart = localStorage.getItem('cartItems');
 	if (storedCart) {
         cartItems = JSON.parse(storedCart);
-		console.log(cartItems)
-		console.log("here we go");
     }
 
     // AJAX request to send the category ID
-    $.ajax({
-        url: `${API_BASE_URL}/products-by-category/${categoryId}`,
-        type: 'POST', // or 'GET' depending on your needs
-        data: { id: categoryId }, // Send the ID in the request
-        headers: {
-            'Accept-Language': userLanguage,
-            'Content-Type': 'application/json',
-            'Accept': 'application/json',
-            'secret-key': SECRET_KEY,
-            'api-key': API_KEY
-        },
-        success: function(response) {
-            // Clear the previous product list
-            $('#product-list').empty();
+	// AJAX request to send the category ID
+	$.ajax({
+		url: `${API_BASE_URL}/products-by-category/${categoryId}`,
+		type: 'POST', // or 'GET' depending on your needs
+		data: { id: categoryId }, // Send the ID in the request
+		headers: {
+			'Accept-Language': userLanguage,
+			'Content-Type': 'application/json',
+			'Accept': 'application/json',
+			'secret-key': SECRET_KEY,
+			'api-key': API_KEY
+		},
+		success: function(response) {
+			// Clear the previous product list
+			$('#product-list').empty();
 
-            // Check if products are returned
-            if (response.products.length > 0) {
-                response.products.forEach(function(product) {
-                    // Create a product card HTML structure
-                    const productCard = `
-                        <div class="col-sm-4 col-md-6 col-lg-4 col-xl-3 pe-2">
-                            <div class="product-info default-cover card mb-0">
-                                <a href="javascript:void(0);" class="img-bg">
-                                    <img src="${product.image}" alt="Products" width="100" height="100" style="mix-blend-mode: multiply;">
-                                    <span><i data-feather="check" class="feather-16"></i></span>
-                                </a>
-                                <h6 class="cat-name text-center"><a class="product-category" href="javascript:void(0);">${product.sku}</a></h6>
-                                <h6 class="product-name mt-2 text-center"><a href="javascript:void(0);">${product.name}</a></h6>
-                                <div class="price">
-                                    <div class="row">
-                                        <div class="col-6 price2">
-                                            <p style="color:red;font-weight:bold;font-size:16px">
-                                                ${product.sale_price !== null ? 
-                                                    `<span class="price3" style="text-decoration: line-through; color: gray; display: ruby;">${product.price} TL</span>
-                                                     <span class="price4">${product.sale_price} TL</span>` : 
-                                                    `<span class="price4">${product.price} TL</span>`
-                                                }
-                                            </p>
-                                        </div>
-                                        <div class="col-6">
-                                            <p style="float: ${userLanguage === 'ar' ? 'left' : 'right'};">${product.category}</p>
-                                        </div>
+			// Check if products are returned
+			if (response.products.length > 0) {
+				response.products.forEach(function(product) {
+					// Check if the product SKU is in the cart
+					let isActive = cartItems.some(item => item.code === product.sku);
+
+					// Create a product card HTML structure
+					const productCard = `
+						<div class="col-sm-4 col-md-6 col-lg-4 col-xl-3 pe-2">
+							<div class="product-info default-cover card mb-0 ${isActive ? 'active' : ''}">
+								<a href="javascript:void(0);" class="img-bg">
+									<img src="${product.image}" alt="Products" width="100" height="100" style="mix-blend-mode: multiply;">
+									<span><i data-feather="check" class="feather-16"></i></span>
+								</a>
+								<h6 class="cat-name text-center"><a class="product-category" href="javascript:void(0);">${product.sku}</a></h6>
+								<h6 class="product-name mt-2 text-center"><a href="javascript:void(0);">${product.name}</a></h6>
+								<div class="price">
+									<div class="row">
+										<div class="col-6 price2">
+											<p style="color:red;font-weight:bold;font-size:16px">
+												${product.sale_price !== null ? 
+													`<span class="price3" style="text-decoration: line-through; color: gray; display: ruby;">${product.price} TL</span>
+													<span class="price4">${product.sale_price} TL</span>` : 
+													`<span class="price4">${product.price} TL</span>`
+												}
+											</p>
+										</div>
+										<div class="col-6">
+											<p style="float: ${userLanguage === 'ar' ? 'left' : 'right'};">${product.category}</p>
+										</div>
 										<div class="d-none">
 											<h6 class="product-attributes mt-2 text-center"><a href="javascript:void(0);">${JSON.stringify(product.attributes)}</a></h6>
 											<h6 class="product-stock mt-2 text-center"><a href="javascript:void(0);">${product.quantity}</a></h6>
 										</div>
-                                    </div>
-                                </div>
-                            </div>
-                            <button type="button" class="btn btn-secondary quick-view-button" 
-                                data-product-id="${product.id}"
-                                data-product-name="${product.name}"
-                                data-product-sku="${product.sku}"
-                                data-product-price="${product.price}"
-                                data-product-sale-price="${product.sale_price}"
-                                data-product-category="${product.category}"
-                                data-product-description="${product.description}"
-                                data-product-gallery='${product.gallery}'
-                                data-product-attributes='${JSON.stringify(product.attributes)}'>
-                                ${translations.quickview}
-                            </button>
-                        </div>
-                    `;
-                    // Append the product card to the product list
-                    $('#product-list').append(productCard);
-                });
-            } else {
-				// $('#product-list').append('<div class="col-12 text-center">' + noProductsMessage + '</div>');
-            }
+									</div>
+								</div>
+							</div>
+							<button type="button" class="btn btn-secondary quick-view-button" 
+								data-product-id="${product.id}"
+								data-product-name="${product.name}"
+								data-product-sku="${product.sku}"
+								data-product-price="${product.price}"
+								data-product-sale-price="${product.sale_price}"
+								data-product-category="${product.category}"
+								data-product-description="${product.description}"
+								data-product-gallery='${product.gallery}'
+								data-product-attributes='${JSON.stringify(product.attributes)}'>
+								${translations.quickview}
+							</button>
+						</div>
+					`;
+					// Append the product card to the product list
+					$('#product-list').append(productCard);
+				});
 
-            // Update pagination
-            updatePagination(response.pagination, categoryId);
-        },
-        error: function(xhr, status, error) {
-            console.error('Error sending category ID:', error);
-        }
-    });
+				// Initialize Feather icons after appending the cards
+				feather.replace(); // This ensures Feather icons are rendered
+			} else {
+				// $('#product-list').append('<div class="col-12 text-center">' + noProductsMessage + '</div>');
+			}
+
+			// Update pagination
+			updatePagination(response.pagination, categoryId);
+		},
+		error: function(xhr, status, error) {
+			console.error('Error sending category ID:', error);
+		}
+	});
 
     // Remove 'active' class from all sub-category items and add it to the clicked one
     $('.sub-category-item').removeClass('active'); // Remove active class from all items

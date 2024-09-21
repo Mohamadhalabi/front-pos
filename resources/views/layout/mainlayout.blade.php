@@ -183,6 +183,16 @@
     }
 }
 
+.language-dropdown-menu{
+    display:none;
+}
+
+.language-dropdown-menu2{
+    display:block!important;
+    position: absolute;
+    bottom:-60px;
+}
+
     </style>
 </head>
 
@@ -265,7 +275,14 @@
     const API_KEY = '{{ env('API_KEY', 'default_value') }}'; // Set the API key
 $(document).ready(function() {
 
-
+    $('#language-toggle').on('click', function() {
+        var menu = $('.language-dropdown-menu');
+        if (menu.hasClass('language-dropdown-menu2')) {
+            menu.removeClass('language-dropdown-menu2').addClass('language-dropdown-menu');
+        } else {
+            menu.removeClass('language-dropdown-menu').addClass('language-dropdown-menu2');
+        }
+    });
 
 
     var swiper = new Swiper('.swiper-container', {
