@@ -193,6 +193,12 @@
     bottom:-60px;
 }
 
+@media screen and (min-width:993px){
+    .user-language-mobile{
+        display:none!important;
+    }
+}
+
     </style>
 </head>
 

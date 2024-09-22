@@ -3,9 +3,9 @@
 
     <!-- Logo -->
     <div class="header-left active">
-        <div>
+        <div class="user-language-mobile">
         
-        <ul class="nav user-menu" style="display:flex!important;align-content: flex-start;justify-content: flex-start" id="language-toggle">
+        <ul class="nav user-menu " style="display:flex!important;align-content: flex-start;justify-content: flex-start" id="language-toggle">
     <li class="nav-item dropdown has-arrow flag-nav nav-item-box language-dropdown">
         <a class="nav-link dropdown-toggle" href="javascript:void(0);" role="button" >
             @if(app()->getLocale() == 'en')
@@ -61,11 +61,11 @@
 
 
     <div>
-    <ul class="nav user-menu" style="justify-content:end">
+    <ul class="nav user-menu" style="justify-content:end;">
             <!-- /Select Store -->
             <!-- Flag -->
             <li class="nav-item dropdown has-arrow flag-nav nav-item-box">
-                <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="javascript:void(0);" role="button">
+                <a class="nav-link dropdown-toggle " data-bs-toggle="dropdown" href="javascript:void(0);" role="button">
 
             @if(app()->getLocale() == 'en')
             <img src="{{ URL::asset('/build/img/flags/us.png') }}" alt="Language" class="img-fluid">
