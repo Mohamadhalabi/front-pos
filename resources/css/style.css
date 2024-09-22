@@ -13336,7 +13336,6 @@ th .checkboxs .checkmarks::after, td .checkboxs .checkmarks::after {
   width: 18px;
 }
 .header .menu-drop-user .logout {
-  color: #FF0000;
 }
 @media (max-width: 991.98px) {
   .header .has-arrow .dropdown-toggle > span:nth-child(2) {

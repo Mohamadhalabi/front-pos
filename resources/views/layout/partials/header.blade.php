@@ -111,7 +111,7 @@
                     <div class="dropdown-menu menu-drop-user">
                         <div class="profilename">
                             <div class="profileset">
-                                <div class="profilesets">
+                                <div class="text-center">
                                     <h6>{{ session('user.name') }}</h6>
                                 </div>
                             </div>
@@ -169,11 +169,42 @@
     <div class="dropdown mobile-user-menu">
         <a href="javascript:void(0);" class="nav-link dropdown-toggle" data-bs-toggle="dropdown"
             aria-expanded="false"><i class="fa fa-ellipsis-v"></i></a>
+        @if(session('user'))
         <div class="dropdown-menu dropdown-menu-right">
-            <a class="dropdown-item" href="{{ url('profile') }}">My Profile</a>
-            <a class="dropdown-item" href="{{ url('general-settings') }}">Settings</a>
-            <a class="dropdown-item" href="{{ url('signin') }}">Logout</a>
+        
+        <a class="dropdown-item logout pb-0 mt-2 mb-2" href="{{ route('profile') }}">
+            <h6>{{ session('user.name') }}</h6>
+        </a>    
+
+        <hr class="m-0">
+                            <a class="dropdown-item logout pb-0" href="{{ route('profile') }}">
+                            <img src="{{ URL::asset('/build/img/icons/user-icon.svg') }}" style="margin-bottom:-5px;" alt="img">  {{ __('messages.profile') }}
+                            </a>    
+
+
+                            <hr class="m-0">
+                            <a class="dropdown-item logout pb-0" href="{{ route('orders') }}">
+                            <img src="{{ URL::asset('/build/img/icons/wallet1.svg') }}" style="margin-bottom:-5px;" alt="img"> {{ __('messages.orders') }}
+                            </a>   
+                            
+                            <hr class="m-0">
+                            <a class="dropdown-item logout pb-0" href="{{ route('complains') }}">
+                            <img src="{{ URL::asset('/build/img/icons/settings.svg') }}" style="margin-bottom:-5px;" alt="img"> {{ __('messages.complains') }}
+                            </a>              
+                            
+                            <hr class="m-0">
+                            <a class="dropdown-item logout pb-0"  href="{{ route('logout') }}" onclick="localStorage.clear();">
+                            <img src="{{ URL::asset('/build/img/icons/log-out.svg') }}" style="margin-bottom:-5px;" alt="img"> {{ __('messages.logout') }}
+                            </a>
+                            <hr class="m-0">
         </div>
+        @else
+        <div class="dropdown-menu dropdown-menu-right">
+                        <a href="{{ url('login') }}" class="me-2">{{ __('messages.Login') }}</a>
+                        <hr class="m-0">
+                        <a href="{{ url('signup') }}">{{ __('messages.Register') }}</a>
+        </div>
+        @endif
         
     </div>
     <!-- /Mobile Menu -->

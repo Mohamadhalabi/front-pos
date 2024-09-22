@@ -332,6 +332,9 @@
                                 <span class="me-1 d-flex align-items-center"><i data-feather="credit-card" class="feather-16"></i></span>{{ __('messages.pay') }}
                             </a>
                         </div>
+                        <div style="margin-top:5px!important;text-align:center">
+                        <span class="mt-5 text-center">© <a href="https://fullscreen-co.com/" target="_blank">Fullscreen Co</a></span>
+                        </div>
                     </aside>
                 </div>
             </div>
