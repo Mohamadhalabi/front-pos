@@ -32,7 +32,7 @@
 
     </div>
 
-        <a href="#" class="logo logo-normal">
+        <a href="{{ url('pos') }}" class="logo logo-normal">
             <img src="{{$settings['data']['setting']['website']['system_logo_black']}}" alt="">
         </a>
         <a href="{{ url('pos') }}" class="logo-small">
