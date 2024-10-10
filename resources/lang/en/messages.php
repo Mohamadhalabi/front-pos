@@ -27,8 +27,6 @@ return [
     'confirm_password' => 'Confirm Password',
     'sign_up' => 'Sign Up',
     'already_have_account' => 'Already have an account?',
-    'address' => 'Address',
-    'phone' => 'Phone number',
     'quick_view' => 'Quick View',
     'previous' => 'Previous',
     'next' => 'Next',
@@ -64,9 +62,7 @@ return [
     'first_name' => 'First Name',
     'last_name' => 'Last Name',
     'email' => 'Email',
-    'phone' => 'Phone',
     'user_name' => 'User Name',
-    'password' => 'Password',
     'save' => 'Save',
     'cancel' => 'Cancel',
     'updated_successfully' => 'Updated Successfully',
@@ -74,12 +70,9 @@ return [
     'order_details' => 'Order details',
     'message_success' => 'Success!',
     'error_message' => 'Error',
-    'sku' => 'SKU',
     'title' => 'Title',
     'image' => 'Image',
     'quantity' => 'Quantity',
-    'price' => 'Price',
-    'total' => 'Total',
 
     'orders_page_title' => 'Orders',
     'success_message' => 'The operation was successful.',
@@ -105,10 +98,20 @@ return [
 
     'get_current_address' => 'Pick your Address',
 
+    'payment_status' => [
+        'unpaid' => 'Unpaid',
+        'paid' => 'Paid',
+    ],
+    'order_status' => [
+        'processing' => 'Processing',
+        'completed' => 'Completed',
+        'refund' => 'Refund',
+
+    ],
 
     'com_sent_succ' => 'Your Complain has been sent',
 
-    'search'=> 'Search',
+    'search' => 'Search',
     'isearchfor' => 'I am looking for...',
     'no_results' => 'No results found', 
     'no_products' => 'No products found.',
@@ -120,14 +123,10 @@ return [
     'complain_submitted' => 'Successfully Submitted.',
 
     'coupon' => 'Coupon',
-
     'apply' => 'Apply',
-
 
     'sub_categories' => 'Sub Categories',
     'select_from_sub_categories' => 'Select from below sub categories',
-
-
 
     'modal' => [
         'map_modal' => [

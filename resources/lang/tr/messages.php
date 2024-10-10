@@ -105,6 +105,19 @@ return [
 
     'get_current_address' => 'Adresinizi Seçin',
 
+    
+    'payment_status' => [
+        'unpaid' => "Ödenmemiş",
+        'paid' => "Ödenmiş"
+    ],
+    'order_status' => [
+        'processing' =>  "İşleniyor",
+        'completed' => "Tamamlandı",
+        'refund' => "İade",
+
+    ],
+
+
     'com_sent_succ' => 'Şikayetiniz başarıyla gönderildi',
 
     'search'=> 'Ara',

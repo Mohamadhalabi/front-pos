@@ -58,6 +58,17 @@ return [
 
     'get_current_address' => 'اختر عنوانك',
     
+    'payment_status' => [
+        'unpaid' => "غير مدفوع",
+        'paid' => "مدفوع",
+
+    ],
+    'order_status' => [
+        'processing' => "قيد المعالجة",
+        'completed' => "مكتمل",
+        'refund' => "استرداد",
+    ],
+
     
     'profile' => 'الملف الشخصي',
     'user_profile' => 'ملف المستخدم',

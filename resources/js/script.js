@@ -1118,6 +1118,9 @@ $('.pos-sub-category').on('click', '.sub-category-item a', function(event) {
     const categoryId = $(this).closest('.sub-category-item').attr('id'); // Get the ID of the clicked item
     const userLanguage = currentLocale;
 
+
+	cartItems = [];
+
 	//user cart 
 	let storedCart = localStorage.getItem('cartItems');
 	if (storedCart) {

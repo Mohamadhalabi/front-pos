@@ -42,8 +42,8 @@
                         @foreach($orders as $order)
                         <tr>
                             <td>{{ $order['uuid'] }}</td>
-                            <td>{{ $order['payment_status'] }}</td>
-                            <td>{{ $order['status'] }}</td>
+                            <td>{{ __('messages.payment_status.' . $order['payment_status']) }}</td>
+                            <td>{{ __('messages.order_status.' . $order['status']) }}</td>
                             <td>{{ $order['total'] }}</td>
                             <td>{{ $order['address'] }}</td>
                             <td>{{ $order['phone'] }}</td>

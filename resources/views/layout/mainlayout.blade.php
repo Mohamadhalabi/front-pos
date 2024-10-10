@@ -813,27 +813,36 @@ $(document).on('click', '.product-info:not(.cart-item)', function() {
         // Get product attributes
         let productattributes = $(this).find('.product-attributes a').text();
 
-
-        let productAttributes = JSON.parse(productattributes);
-
-
-        //products attribute start from 1 
-            // Check if the array has at least one element and the first element is not undefined
-            if (productAttributes.length > 0 && productAttributes[0].hasOwnProperty('from')) {
-                let fromValue = productAttributes[0].from;
-
-                // Check if 'from' equals 1 and assign the price to salePrice if it does
-                if (fromValue === 1) {
-                    salePrice = productAttributes[0].price;
-                } else {
-                    salePrice = salePriceText ? salePriceText : price;
-                }
+        // Parse product attributes safely
+        let productAttributes;
+        try {
+            if (productattributes) {
+                productAttributes = JSON.parse(productattributes);
             } else {
-                // If the 'from' property does not exist or the array is empty, assign default value
+                productAttributes = []; // Default value if no attributes are found
+            }
+        } catch (error) {
+            console.error("Error parsing product attributes:", error);
+            productAttributes = []; // Default to an empty array in case of an error
+        }
+
+        // products attribute start from 1 
+        // Check if the array has at least one element and the first element is not undefined
+        if (productAttributes.length > 0 && productAttributes[0].hasOwnProperty('from')) {
+            let fromValue = productAttributes[0].from;
+
+            // Check if 'from' equals 1 and assign the price to salePrice if it does
+            if (fromValue === 1) {
+                salePrice = productAttributes[0].price;
+            } else {
                 salePrice = salePriceText ? salePriceText : price;
             }
+        } else {
+            // If the 'from' property does not exist or the array is empty, assign default value
+            salePrice = salePriceText ? salePriceText : price;
+        }
 
-        //end
+        // Get product stock
         let productStock = parseInt($(this).find('.product-stock a').text());
 
         let product = {
@@ -843,8 +852,8 @@ $(document).on('click', '.product-info:not(.cart-item)', function() {
             originalPrice: salePrice, // Store the original price separately
             code: productSku,
             quantity: 1,
-            prodStock : productStock,
-            attributes: JSON.parse(productattributes) // Store the attributes as an array of objects
+            prodStock: productStock,
+            attributes: productAttributes // Store the parsed attributes as an array of objects
         };
 
         if (productStock < 1) {
@@ -861,40 +870,39 @@ $(document).on('click', '.product-info:not(.cart-item)', function() {
 
                     // Send AJAX request with product SKU and user email to the backend
                     $.ajax({
-                            url: `${API_BASE_URL}/notify-me`,
-                            method: 'GET',
-                            data: {
-                                sku: productSku,
-                                email: email
-                            },
-                            headers: {
-                                'Accept-Language': userLanguage,
-                                'Content-Type': 'application/json',
-                                'Accept': 'application/json',
-                                'secret-key': SECRET_KEY,
-                                'api-key': API_KEY
-                            },
-                            success: function(response) {
-                                if (response.success) {
-                                    Swal.fire({
-                                        title: userLanguage === 'ar' ? 'المنتج غير متوفر حاليا!' : 'The product is currently not available',
-                                        text: userLanguage === 'ar' ? 'سنخبرك عندما يكون المنتج متاحًا مرة أخرى.' : 'We will inform you when the product is available again.',
-                                        icon: 'success',
-                                        confirmButtonText: userLanguage === 'ar' ? 'حسناً' : 'OK'
-                                    });
-                                    $('#emailModal').modal('hide');
-
-                                }
-                            },
-                            error: function(xhr) {
+                        url: `${API_BASE_URL}/notify-me`,
+                        method: 'GET',
+                        data: {
+                            sku: productSku,
+                            email: email
+                        },
+                        headers: {
+                            'Accept-Language': userLanguage,
+                            'Content-Type': 'application/json',
+                            'Accept': 'application/json',
+                            'secret-key': SECRET_KEY,
+                            'api-key': API_KEY
+                        },
+                        success: function(response) {
+                            if (response.success) {
                                 Swal.fire({
-                                    title: userLanguage === 'ar' ? 'خطأ!' : 'Error!',
-                                    text: xhr.responseJSON.message,
-                                    icon: 'error',
+                                    title: userLanguage === 'ar' ? 'المنتج غير متوفر حاليا!' : 'The product is currently not available',
+                                    text: userLanguage === 'ar' ? 'سنخبرك عندما يكون المنتج متاحًا مرة أخرى.' : 'We will inform you when the product is available again.',
+                                    icon: 'success',
                                     confirmButtonText: userLanguage === 'ar' ? 'حسناً' : 'OK'
                                 });
+                                $('#emailModal').modal('hide');
                             }
-                        });
+                        },
+                        error: function(xhr) {
+                            Swal.fire({
+                                title: userLanguage === 'ar' ? 'خطأ!' : 'Error!',
+                                text: xhr.responseJSON.message,
+                                icon: 'error',
+                                confirmButtonText: userLanguage === 'ar' ? 'حسناً' : 'OK'
+                            });
+                        }
+                    });
                 });
             } else {
                 let email = userSession.email;
@@ -902,7 +910,7 @@ $(document).on('click', '.product-info:not(.cart-item)', function() {
 
                 // Send AJAX request with product SKU and logged-in user email to the backend
                 $.ajax({
-                    url: `${API_BASE_URL}/notify-me`, // Use the API_BASE_URL and endpoint for creating an order
+                    url: `${API_BASE_URL}/notify-me`,
                     method: 'GET',
                     data: {
                         sku: productSku,
@@ -910,21 +918,21 @@ $(document).on('click', '.product-info:not(.cart-item)', function() {
                         phone: phone
                     },
                     headers: {
-                        'Accept-Language': userLanguage, // Set the language header based on user preference
+                        'Accept-Language': userLanguage,
                         'Content-Type': 'application/json',
                         'Accept': 'application/json',
-                        'secret-key': SECRET_KEY, // Use the secret key from the environment
-                        'api-key': API_KEY // Use the API key from the environment
+                        'secret-key': SECRET_KEY,
+                        'api-key': API_KEY
                     },
                     success: function(response) {
                         if (response.success) {
-                                    Swal.fire({
-                                        title: userLanguage === 'ar' ? 'المنتج غير متوفر حاليا!' : 'The product is currently not available',
-                                        text: userLanguage === 'ar' ? 'سنخبرك عندما يكون المنتج متاحًا مرة أخرى.' : 'We will inform you when the product is available again.',
-                                        icon: 'success',
-                                        confirmButtonText: userLanguage === 'ar' ? 'حسناً' : 'OK'
-                                    });
-                            }
+                            Swal.fire({
+                                title: userLanguage === 'ar' ? 'المنتج غير متوفر حاليا!' : 'The product is currently not available',
+                                text: userLanguage === 'ar' ? 'سنخبرك عندما يكون المنتج متاحًا مرة أخرى.' : 'We will inform you when the product is available again.',
+                                icon: 'success',
+                                confirmButtonText: userLanguage === 'ar' ? 'حسناً' : 'OK'
+                            });
+                        }
                     }
                 });
             }
