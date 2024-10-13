@@ -8,18 +8,13 @@
         <ul class="nav user-menu " style="display:flex!important;align-content: flex-start;justify-content: flex-start" id="language-toggle">
     <li class="nav-item dropdown has-arrow flag-nav nav-item-box language-dropdown">
         <a class="nav-link dropdown-toggle" href="javascript:void(0);" role="button" >
-            @if(app()->getLocale() == 'en')
-            <img src="{{ URL::asset('/build/img/flags/us.png') }}" alt="Language" class="img-fluid">
-            @elseif(app()->getLocale() == "ar")
+            @if(app()->getLocale() == "ar")
             <img src="{{ URL::asset('/build/img/flags/sa.png') }}" alt="Language" class="img-fluid">
             @else
             <img src="{{ URL::asset('/build/img/flags/tr.png') }}" alt="Language" class="img-fluid">
             @endif
         </a>
         <div class="dropdown-menu dropdown-menu-right language-dropdown-menu">
-            <a href="{{ route('lang.switch', 'en') }}" class="dropdown-item selected-lang {{ app()->getLocale() == 'en' ? 'active' : '' }}">
-                <img src="{{ URL::asset('/build/img/flags/us.png') }}" alt="" height="16"> English
-            </a>
             <a href="{{ route('lang.switch', 'ar') }}" class="dropdown-item selected-lang {{ app()->getLocale() == 'ar' ? 'active' : '' }}">
                 <img src="{{ URL::asset('/build/img/flags/sa.png') }}" alt="" height="16"> Arabic
             </a>
@@ -67,9 +62,7 @@
             <li class="nav-item dropdown has-arrow flag-nav nav-item-box">
                 <a class="nav-link dropdown-toggle " data-bs-toggle="dropdown" href="javascript:void(0);" role="button">
 
-            @if(app()->getLocale() == 'en')
-            <img src="{{ URL::asset('/build/img/flags/us.png') }}" alt="Language" class="img-fluid">
-            @elseif(app()->getLocale() == "ar")
+            @if(app()->getLocale() == "ar")
             <img src="{{ URL::asset('/build/img/flags/sa.png') }}" alt="Language" class="img-fluid">
             @else
             <img src="{{ URL::asset('/build/img/flags/tr.png') }}" alt="Language" class="img-fluid">
@@ -77,9 +70,6 @@
 
                 </a>
                 <div class="dropdown-menu dropdown-menu-right">
-                <a href="{{ route('lang.switch', 'en') }}" class="dropdown-item selected-lang {{ app()->getLocale() == 'en' ? 'active' : '' }}">
-                    <img src="{{ URL::asset('/build/img/flags/us.png') }}" alt="" height="16"> English
-                    </a>
                     <a href="{{ route('lang.switch', 'ar') }}" class="dropdown-item selected-lang {{ app()->getLocale() == 'ar' ? 'active' : '' }}">
                         <img src="{{ URL::asset('/build/img/flags/sa.png') }}" alt="" height="16"> Arabic
                     </a>

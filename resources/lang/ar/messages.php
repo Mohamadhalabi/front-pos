@@ -67,6 +67,8 @@ return [
         'processing' => "قيد المعالجة",
         'completed' => "مكتمل",
         'refund' => "استرداد",
+        'canceled' => 'تم الإلغاء',
+        'refunded' => 'استرداد',
     ],
 
     

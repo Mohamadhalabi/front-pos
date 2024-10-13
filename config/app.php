@@ -83,7 +83,7 @@ return [
     |
     */
 
-    'locale' => 'en',
+    'locale' => 'ar',
 
     /*
     |--------------------------------------------------------------------------
@@ -96,7 +96,7 @@ return [
     |
     */
 
-    'locales' => ['en' => 'English', 'ar' => 'Arabic', 'tr' => 'Turkish'],
+    'locales' => ['ar' => 'Arabic', 'tr' => 'Turkish'],
 
     'fallback_locale' => 'en',
 

@@ -1074,6 +1074,7 @@ $(document).ready(function(){
                                 data-product-id="${product.id}"
                                 data-product-name="${product.name}"
                                 data-product-sku="${product.sku}"
+								data-product-quantity="${product.quantity}"
                                 data-product-price="${product.price}"
                                 data-product-sale-price="${product.sale_price}"
                                 data-product-category="${product.category}"
@@ -1184,6 +1185,7 @@ $('.pos-sub-category').on('click', '.sub-category-item a', function(event) {
 							<button type="button" class="btn btn-secondary quick-view-button" 
 								data-product-id="${product.id}"
 								data-product-name="${product.name}"
+								data-product-quantity="${product.quantity}"
 								data-product-sku="${product.sku}"
 								data-product-price="${product.price}"
 								data-product-sale-price="${product.sale_price}"
@@ -2133,40 +2135,50 @@ $(document).ready(function(){
 			$('.deleted-info').addClass('d-block');
 		});
 	}
-	// POS Category Slider
-	if($('.pos-category').length > 0) {      
-		$('.pos-category').owlCarousel({
-			items: 15,
-			loop:false,
-			margin:8,
-			nav:true,
-			dots: false,
-			autoplay:false,
-			smartSpeed: 1000,
-			navText: ['<i class="fas fa-chevron-left"></i>', '<i class="fas fa-chevron-right"></i>'],
-			responsive:{
-				0:{
-					items:2
-				},
-				500:{
-					items:4
-				},
-				768:{
-					items:6
-				},
-				991:{
-					items:6
-				},
-				1200:{
-					items:6
-				},
-				1401:{
-					items:7
-				}
-			}
-		})
-	}
 
+	const userLanguage = currentLocale;
+
+	// POS Category Slider
+    if($('.pos-category').length > 0) {  
+        // Check if the page is RTL
+        
+        // Adjust navigation text based on RTL or LTR
+		var navText = userLanguage === 'ar' 
+		? ['<div><i class="fas fa-chevron-left"></i>', '<i class="fas fa-chevron-right"></i></div>'] // Swap for RTL
+            : ['<div><i class="fas fa-chevron-left"></i>', '<i class="fas fa-chevron-right"></i></div>']; // Default for LTR
+
+        $('.pos-category').owlCarousel({
+            items: 15,
+            loop: false,
+            margin: 8,
+            nav: true,
+            dots: false,
+            autoplay: false,
+            smartSpeed: 1000,
+            navText: navText, // Use dynamic navText
+            responsive: {
+                0: {
+                    items: 2
+                },
+                500: {
+                    items: 2
+                },
+                768: {
+                    items: 2
+                },
+                991: {
+                    items: 6
+                },
+                1200: {
+                    items: 6
+                },
+                1401: {
+                    items: 7
+                }
+            }
+        });
+    }
+	
 	if($('.owl-tt').length > 0) {      
 		$('.owl-tt').owlCarousel({
 			items: 1,
@@ -2425,6 +2437,10 @@ function loadPage(page,categoryId) {
         success: function(response) {
             // Call the success function to handle the new products and pagination
             $('#product-list').empty();
+
+
+			console.log(response);
+
             updateProductList(response.products);
             updatePagination(response.pagination,categoryId);
         },
@@ -2473,6 +2489,7 @@ function updateProductList(products) {
                                 data-product-name="${product.name}"
                                 data-product-sku="${product.sku}"
                                 data-product-price="${product.price}"
+								data-product-quantity="${product.quantity}"
                                 data-product-sale-price="${product.sale_price}"
                                 data-product-category="${product.category}"
                                 data-product-description="${product.description}"

@@ -114,6 +114,8 @@ return [
         'processing' =>  "İşleniyor",
         'completed' => "Tamamlandı",
         'refund' => "İade",
+        'canceled' => 'İptal edildi',
+        'refunded' => 'İade',
 
     ],
 

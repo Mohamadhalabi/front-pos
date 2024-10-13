@@ -29,7 +29,7 @@
                             @endif
 
                             <div class="form-login">
-                                <label class="form-label">{{ __('messages.email_address') }} / phone number</label>
+                                <label class="form-label">{{ __('messages.email_address') }} / {{ __('messages.phone') }}</label>
                                 <div class="form-addons">
                                     <input type="text" name="email" required class="form-control" value="{{ old('email') }}">
                                 </div>

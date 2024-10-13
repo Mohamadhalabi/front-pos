@@ -57,6 +57,7 @@
             data-product-name="{{ $product['name'] }}"
             data-product-sku="{{ $product['sku'] }}"
             data-product-price="{{ $product['price'] }}"
+            data-product-quantity="{{$product['quantity']}}"
             data-product-sale-price="{{ $product['sale_price'] }}"
             data-product-category="{{ $product['category'] }}"
             data-product-description="{{ $product['description'] }}"
@@ -85,7 +86,7 @@
                         <h5>{{ __('messages.categories') }}</h5>
                         <p>{{ __('messages.select_from_categories') }}</p>
                         <!-- Categories Section -->
-                        <ul class="tabs owl-carousel pos-category">
+                        <ul class="tabs owl-carousel pos-category" style="direction:ltr;">
                             @foreach($categories as $category)
                                 <li id="{{$category['id']}}" data-id="{{$category['id']}}" class="category-item" style="cursor: pointer;padding-top:0">
                                     <a href="#" class="category-link" onclick="event.stopPropagation();">
@@ -100,7 +101,7 @@
                         <!-- SUB CATEGORIES REGION  -->
                         <h5>{{ __('messages.sub_categories') }}</h5>
                         <p>{{ __('messages.select_from_sub_categories') }}</p>
-                        <ul class="tabs owl-carousel pos-category pos-sub-category">
+                        <ul class="tabs owl-carousel pos-category pos-sub-category" style="direction:ltr;">
 
                         </ul>
 

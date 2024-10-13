@@ -962,14 +962,14 @@ $(document).on('click', '.delete-icon', function() {
 // Handle increment and decrement of quantity
 $(document).on('click', '.inc', function() {
     let index = $(this).closest('.product-list').find('.delete-icon').data('index');
-    if(cartItems[index].quantity < cartItems[index].prodStock){
+    // if(cartItems[index].quantity < cartItems[index].prodStock){
     cartItems[index].quantity += 1;
     updatePriceBasedOnQuantity(index);
     saveCart();
     updateCartDisplay();
     updateCartCount();
     calculateTotal();
-    }
+    // }
 });
 
 $(document).on('click', '.dec', function() {
